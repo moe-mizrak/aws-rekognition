@@ -1,0 +1,55 @@
+{
+  "name": "moe-mizrak/aws-rekognition",
+  "description": "Laravel package for AWS Rekognition API (PHP 8)",
+  "keywords": [
+    "Moe Mizrak",
+    "laravel",
+    "laravel-aws-rekognition",
+    "rekognition",
+    "aws",
+    "image processing",
+    "image recognition",
+    "video recognition",
+    "face detection",
+    "face compare",
+    "machine learning",
+    "php 8"
+  ],
+  "type": "package",
+  "homepage": "https://github.com/moe-mizrak/aws-rekognition",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Moe Mizrak"
+    }
+  ],
+  "require": {
+    "php": "^8.2"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^9.6.1",
+    "phpunit/phpunit": "^11.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "MoeMizrak\\Rekognition\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MoeMizrak\\Rekognition\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "MoeMizrak\\Rekognition\\RekognitionServiceProvider"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
