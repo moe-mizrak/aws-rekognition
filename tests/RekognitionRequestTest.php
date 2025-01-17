@@ -29,7 +29,8 @@ class RekognitionRequestTest extends TestCase
     public function it_test_detect_labels_request_of_image_sent()
     {
         /* SETUP */
-        $image = file_get_contents('resources/images/test_labels.jpg');
+        $imagePath = __DIR__.'/resources/images/test_labels.jpg';
+        $image = file_get_contents($imagePath);
         $imageData = new ImageData(
             bytes: $image,
         );
