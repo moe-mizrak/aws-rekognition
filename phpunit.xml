@@ -7,5 +7,9 @@
 
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="AWS_ACCESS_KEY_ID" value=""/>
+        <env name="AWS_SECRET_ACCESS_KEY" value=""/>
+        <env name="AWS_REGION" value="us-east-1"/>
+        <env name="AWS_VERSION" value="latest"/>
     </php>
 </phpunit>
