@@ -2,6 +2,7 @@
 
 namespace MoeMizrak\Rekognition;
 
+use Aws\Rekognition\RekognitionClient;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use MoeMizrak\Rekognition\Facades\Rekognition;
@@ -32,20 +33,32 @@ class RekognitionServiceProvider extends ServiceProvider
     {
         $this->configure();
 
-        // todo modify this part for aws rekognition request
-//        $this->app->singleton(ClientInterface::class, function () {
-//            return $this->configureClient();
-//        });
-
-        $this->app->bind('aws-rekognition', function () {
-            return new RekognitionRequest();
+        /*
+         * Bind the RekognitionClient to the container so that it can be mocked for testing.
+         */
+        $this->app->bind(RekognitionClient::class, function () {
+            return $this->rekognitionClient();
         });
 
+        /*
+         * When Facade is called, it will return an instance of RekognitionRequest.
+         */
+        $this->app->bind('aws-rekognition', function () {
+            return new RekognitionRequest(
+                $this->app->make(RekognitionClient::class),
+            );
+        });
+
+        /*
+         * When RekognitionRequest is called, it will make aws-rekognition which is an instance of RekognitionRequest as described above.
+         */
         $this->app->bind(RekognitionRequest::class, function () {
             return $this->app->make('aws-rekognition');
         });
 
-        // Register the facade alias.
+        /*
+         * Register the facade alias.
+         */
         AliasLoader::getInstance()->alias('Rekognition', Rekognition::class);
     }
 
@@ -86,12 +99,26 @@ class RekognitionServiceProvider extends ServiceProvider
     }
 
     /**
-     * Configure the Guzzle client.
+     * Configure the RekognitionClient.
      *
-     * @return \GuzzleHttp\Client
+     * @return RekognitionClient
      */
-    private function configureClient(): Client
+    private function rekognitionClient(): RekognitionClient
     {
-        // todo implement for aws rekognition request
+        // Set the options for the RekognitionClient.
+        $options = [
+            'credentials' => [
+                'key'    => config('aws-rekognition.credentials.key'),
+                'secret' => config('aws-rekognition.credentials.secret'),
+            ],
+            'region'      => config('aws-rekognition.region'),
+            'version'     => config('aws-rekognition.version'),
+        ];
+
+        /*
+         * Create and return a RekognitionClient client.
+         * For more info: https://github.com/aws/aws-sdk-php
+         */
+        return new RekognitionClient($options);
     }
 }
