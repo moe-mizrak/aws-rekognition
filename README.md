@@ -57,23 +57,23 @@ AWS_VERSION=your_aws_version
 ```
 
 - credentials: AWS credentials for accessing the Rekognition API. Please refer to the 
-[Get Access Key ID and Secret Access Key for AWS](https://bobbyhadz.com/blog/aws-get-aws-access-key-id#get-access-key-id-and-secret-access-key-for-an-iam-account)
-    - AWS_ACCESS_KEY_ID: The AWS access key ID.
-    - AWS_SECRET_ACCESS_KEY: The AWS secret access key.
+[Get Access Key ID and Secret Access Key for AWS](https://bobbyhadz.com/blog/aws-get-aws-access-key-id#get-access-key-id-and-secret-access-key-for-an-iam-account):
+    - **AWS_ACCESS_KEY_ID**: The AWS access key ID.
+    - **AWS_SECRET_ACCESS_KEY**: The AWS secret access key.
 
 > [!IMPORTANT]
-> Give following **Permissions** to the IAM user for accessing the Rekognition API.
-> - AmazonRekognitionFullAccess
-> - AmazonS3FullAccess
+> Give following **Permissions** to the IAM user for accessing the **Rekognition API**:
+> - `AmazonRekognitionFullAccess`
+> - `AmazonS3FullAccess`
 
-- AWS_REGION: The AWS region where the Rekognition API is located (default: us-east-1).
+- **AWS_REGION**: The AWS region where the Rekognition API is located (default: us-east-1).
 
 > [!CAUTION]
 > The region for the **S3 bucket** containing the S3 object **must match** the **region** you use for Amazon **Rekognition** operations.
 
-- AWS_VERSION: The version of the Rekognition API (default: latest).
+- **AWS_VERSION**: The version of the Rekognition API (default: latest).
 
-For more info, refer to [AWS Client](https://docs.aws.amazon.com/aws-sdk-php/v3/api/class-Aws.AwsClient.html#method___construct)
+For more info, please refer to [AWS Client](https://docs.aws.amazon.com/aws-sdk-php/v3/api/class-Aws.AwsClient.html#method___construct).
 
 ## 🎨 Usage
 
