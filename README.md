@@ -121,7 +121,7 @@ $imageData = new ImageData(
 // Create an S3ObjectData object
 $s3Object = new S3ObjectData(
     bucket: 'your_bucket_name',
-    name: 'your_image_name.jpg',
+    name  : 'your_image_name.jpg',
 );
 // Create an ImageData object by providing the S3 object
 $imageData = new ImageData(
@@ -146,15 +146,15 @@ $detectLabelsData = new DetectLabelsData(
 ```php
 // Create a DetectLabelsData object with optional parameters
 $detectLabelsData = new DetectLabelsData(
-    image: $imageData,
-    maxLabels: 10, // Maximum number of labels to return
+    image        : $imageData,
+    maxLabels    : 10, // Maximum number of labels to return
     minConfidence: 80.0, // Minimum confidence level for the labels to return
-    settings: new SettingsData(
+    settings     : new SettingsData(
         generalLabels: new GeneralLabelsSettingsData(
             labelCategoryExclusionFilters: ['Person Description'],
             labelCategoryInclusionFilters: ['Animals and Pets'],
-            labelExclusionFilters: ['Man', 'Woman'],
-            labelInclusionFilters: ['Dog', 'Cat'],
+            labelExclusionFilters        : ['Man', 'Woman'],
+            labelInclusionFilters        : ['Dog', 'Cat'],
         ),
     ),
 );
