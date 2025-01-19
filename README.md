@@ -20,8 +20,6 @@ Laravel package for AWS Rekognition API (PHP 8)
 - [💫 Contributing](#-contributing)
 - [📜 License](#-license)
 
----
-
 ## 🤖 Requirements
 - **PHP 8.2** or **higher**
 
@@ -31,7 +29,7 @@ You can **install** the package via composer:
 composer require moe-mizrak/aws-rekognition
 ```
 
-You can **publish** the **config file** with:
+You can **publish** the [`aws-rekognition`](config/aws-rekognition.php) **config file** with:
 ```bash
 php artisan vendor:publish --tag=aws-rekognition
 ```
@@ -52,7 +50,7 @@ return [
 </details>
 
 ## 🧩 Configuration
-After publishing the **aws-rekognition** config file, you'll need to add the following environment variables to your **.env** file:
+After publishing the [`aws-rekognition`](config/aws-rekognition.php) config file, you'll need to add the following environment variables to your **.env** file:
 
 ```env
 AWS_ACCESS_KEY_ID=your_aws_access_key_id
@@ -93,13 +91,18 @@ The `Rekognition` facade offers a convenient way to make **AWS Rekognition API**
 Following **Rekognition API** operations are supported:
 - [Detect Labels](#detect-labels)
 
+> [!TIP]
+> All classes include **comprehensive** DocBlock **comments** and **detailed documentation** to enhance readability and understanding.
+> 
+> Refer to the class definitions for a complete overview of **methods**, **parameters**, and **their usage**.
+
 ### Detect Labels
 Detects instances of **real-world entities** within an **image** (**JPEG** or **PNG**) provided as input.
 This includes objects like flower, tree, and table; events like wedding, graduation, and birthday party; and concepts like landscape, evening, and nature.
 
 Labels supported by **Rekognition** label detection operations can be found in [Detecting Objects and Concepts](https://docs.aws.amazon.com/rekognition/latest/dg/labels.html).
 
-First of all, you need to create an instance of **ImageData** object by providing the **image bytes** of an image file.
+First of all, you need to create an instance of [`ImageData`](src/Data/ImageData.php) object by providing the **image bytes** of an image file.
 ```php
 // Path to the image file
 $imagePath = __DIR__.'/resources/images/test_labels.jpg';
@@ -129,7 +132,7 @@ $imageData = new ImageData(
 For more details, see [S3Object](https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html#shape-s3object) section.
 </details>
 
-To send a **detect labels** request, you need to create an instance of **DetectLabelsData** object.
+To send a **detect labels** request, you need to create an instance of [`DetectLabelsData`](src/Data/DetectLabelsData.php) object.
 ```php
 // Create a DetectLabelsData object
 $detectLabelsData = new DetectLabelsData(
@@ -157,7 +160,7 @@ $detectLabelsData = new DetectLabelsData(
 );
 ```
 
-Check out `DetectLabelsData` class for optional parameters and their descriptions.
+Check out [`DetectLabelsData`](src/Data/DetectLabelsData.php) class for optional parameters and their descriptions.
 
 For more details, see [DetectLabels](https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html#detectlabels) section.
 </details>
@@ -168,7 +171,8 @@ Then, you can send the request using the `Rekognition` facade `detectLabels` met
 $response = Rekognition::detectLabels($detectLabelsData);
 ```
 
-Response will be an instance of **ResultData** object.
+Response will be an instance of [`ResultData`](src/Data/ResultData/ResultData.php) object.
+
 <details>
 <summary>This is the sample ResultData:</summary>
 
