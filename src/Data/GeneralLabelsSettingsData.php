@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MoeMizrak\Rekognition\Data;
 
+use MoeMizrak\Rekognition\Data\Contracts\RekognitionDataFormatInterface;
 use Spatie\LaravelData\Data;
 
 /**
@@ -13,7 +14,7 @@ use Spatie\LaravelData\Data;
  *
  * @class GeneralLabelsSettingsData
  */
-final class GeneralLabelsSettingsData extends Data
+final class GeneralLabelsSettingsData extends Data implements RekognitionDataFormatInterface
 {
     public function __construct(
         /*
@@ -46,9 +47,7 @@ final class GeneralLabelsSettingsData extends Data
     ) {}
 
     /**
-     * Convert the data to an AWS Rekognition array format.
-     *
-     * @return array
+     * @inheritDoc
      */
     public function toRekognitionDataFormat(): array
     {

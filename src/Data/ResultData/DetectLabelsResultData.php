@@ -9,12 +9,12 @@ use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
 
 /**
- * ResultData is for the result of the Rekognition API detectLabels request.
+ * DetectLabelsResultData is for the result of the Rekognition API detectLabels request.
  * For more info: https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html#detectlabels
  *
- * @class ResultData
+ * @class DetectLabelsResultData
  */
-final class ResultData extends Data
+final class DetectLabelsResultData extends Data
 {
     public function __construct(
         /*
@@ -30,7 +30,7 @@ final class ResultData extends Data
          *
          * @param string|null
          */
-        public ?string $LabelModelVersion = null,
+        public ?string $labelModelVersion = null,
 
         /*
          * The value of orientationCorrection is always null.

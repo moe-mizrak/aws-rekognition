@@ -171,13 +171,13 @@ Then, you can send the request using the `Rekognition` facade `detectLabels` met
 $response = Rekognition::detectLabels($detectLabelsData);
 ```
 
-Response will be an instance of [`ResultData`](src/Data/ResultData/ResultData.php) object.
+Response will be an instance of [`DetectLabelsResultData`](src/Data/ResultData/DetectLabelsResultData.php) object.
 
 <details>
-<summary>This is the sample ResultData:</summary>
+<summary>This is the sample DetectLabelsResultData:</summary>
 
 ```php
-ResultData(
+DetectLabelsResultData(
     labels: DataCollection([
         LabelData(
             name: 'Adult',

@@ -2,8 +2,11 @@
 
 namespace MoeMizrak\Rekognition\Tests;
 
+use MoeMizrak\Rekognition\Data\CreateCollectionData;
+use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
 use MoeMizrak\Rekognition\Data\ImageData;
+use MoeMizrak\Rekognition\Data\ListCollectionsData;
 use MoeMizrak\Rekognition\Data\S3ObjectData;
 use MoeMizrak\Rekognition\Facades\Rekognition;
 use PHPUnit\Framework\Attributes\Test;
@@ -30,6 +33,7 @@ class RekognitionRequestTest extends TestCase
     {
         /* SETUP */
         $imagePath = __DIR__.'/resources/images/test_labels.jpg';
+        $methodName = 'detectLabels';
         $image = file_get_contents($imagePath);
         $imageData = new ImageData(
             bytes: $image,
@@ -38,7 +42,7 @@ class RekognitionRequestTest extends TestCase
             image: $imageData,
             maxLabels: 5,
         );
-        $this->mockDetectLabelsRequest();
+        $this->mockRekognitionClient($methodName);
 
         /* EXECUTE */
         $response = Rekognition::detectLabels($detectLabelsData);
@@ -46,13 +50,14 @@ class RekognitionRequestTest extends TestCase
         /* ASSERT */
         $this->metaDataAssertions($response);
         $this->assertInstanceOf(DataCollection::class, $response->labels);
-        $this->assertNotNull($response->LabelModelVersion);
+        $this->assertNotNull($response->labelModelVersion);
     }
 
     #[Test]
     public function it_test_detect_labels_request_of_s3_image()
     {
         /* SETUP */
+        $methodName = 'detectLabels';
         $s3Object = new S3ObjectData(
             bucket: 'test_bucket_name',
             name: 'test_image_key_name.jpg',
@@ -65,7 +70,7 @@ class RekognitionRequestTest extends TestCase
             image: $imageData,
             maxLabels: 5,
         );
-        $this->mockDetectLabelsRequest();
+        $this->mockRekognitionClient($methodName);
 
         /* EXECUTE */
         $response = Rekognition::detectLabels($detectLabelsData);
@@ -73,6 +78,66 @@ class RekognitionRequestTest extends TestCase
         /* ASSERT */
         $this->metaDataAssertions($response);
         $this->assertInstanceOf(DataCollection::class, $response->labels);
-        $this->assertNotNull($response->LabelModelVersion);
+        $this->assertNotNull($response->labelModelVersion);
+    }
+
+    #[Test]
+    public function it_tests_create_collection_request_for_given_collection_id_and_tags()
+    {
+        /* SETUP */
+        $methodName = 'createCollection';
+        $collectionId = 'test_collection_id_0';
+        $createCollectionData = new CreateCollectionData(
+            collectionId: $collectionId,
+        );
+        $this->mockRekognitionClient($methodName);
+
+        /* EXECUTE */
+        $response = Rekognition::createCollection($createCollectionData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertNotNull($response->collectionArn);
+        $this->assertNotNull($response->faceModelVersion);
+        $this->assertEquals(200, $response->statusCode);
+        $this->assertStringContainsString($collectionId, $response->collectionArn);
+    }
+
+    #[Test]
+    public function it_tests_list_collections_request()
+    {
+        /* SETUP */
+        $methodName = 'listCollections';
+        $listCollectionsData = new ListCollectionsData();
+        $this->mockRekognitionClient($methodName);
+
+        /* EXECUTE */
+        $response = Rekognition::listCollections($listCollectionsData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertIsArray($response->collectionIds);
+        $this->assertIsArray($response->faceModelVersions);
+        $this->assertContains('test_collection_id_0', $response->collectionIds);
+        $this->assertContains('test_collection_id_1', $response->collectionIds);
+    }
+
+    #[Test]
+    public function it_tests_delete_collection_request_for_given_collection_id()
+    {
+        /* SETUP */
+        $methodName = 'deleteCollection';
+        $deleteCollectionId = 'test_collection_id_2';
+        $deleteCollectionData = new DeleteCollectionData(
+            collectionId: $deleteCollectionId,
+        );
+        $this->mockRekognitionClient($methodName);
+
+        /* EXECUTE */
+        $response = Rekognition::deleteCollection($deleteCollectionData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertEquals(200, $response->statusCode);
     }
 }
