@@ -6,6 +6,7 @@ use Aws\Rekognition\RekognitionClient;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use MoeMizrak\Rekognition\Facades\Rekognition;
+use MoeMizrak\Rekognition\Helpers\RekognitionHelper;
 
 /**
  * Service provider for Rekognition.
@@ -46,6 +47,7 @@ class RekognitionServiceProvider extends ServiceProvider
         $this->app->bind('aws-rekognition', function () {
             return new RekognitionRequest(
                 $this->app->make(RekognitionClient::class),
+                new RekognitionHelper(),
             );
         });
 
