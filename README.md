@@ -411,7 +411,7 @@ Response will be an instance of [`CreateCollectionResultData`](src/Data/ResultDa
 
 ```php
 CreateCollectionResultData(
-    collectionArn: "arn:aws:rekognition:us-east-1:123456789012:collection/your_collection_id",
+    collectionArn: "arn:aws:rekognition:us-east-1:123456789010:collection/your_collection_id",
     faceModelVersion: "7.0",
     statusCode: 200,
     metadata: MetadataData(
