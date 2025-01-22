@@ -17,6 +17,10 @@ Laravel package for AWS Rekognition API (PHP 8)
 - [🧩 Configuration](#-configuration)
 - [🎨 Usage](#-usage)
   - [Detect Labels](#detect-labels)
+  - [Collections](#collections)
+    - [Create Collection](#create-collection)
+    - [Delete Collection](#delete-collection)
+    - [List Collections](#list-collections)
 - [💫 Contributing](#-contributing)
 - [📜 License](#-license)
 
@@ -90,6 +94,10 @@ The `Rekognition` facade offers a convenient way to make **AWS Rekognition API**
 
 Following **Rekognition API** operations are supported:
 - [Detect Labels](#detect-labels)
+- [Collections](#collections)
+  - [Create Collection](#create-collection)
+  - [Delete Collection](#delete-collection)
+  - [List Collections](#list-collections)
 
 > [!TIP]
 > All classes include **comprehensive** DocBlock **comments** and **detailed documentation** to enhance readability and understanding.
@@ -358,7 +366,6 @@ DetectLabelsResultData(
                 "content-type" => "application/x-amz-json-1.1",
                 "content-length" => "2658",
                 "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
-            ],
         ],
         transferStats: [
             "http" => [
@@ -370,6 +377,161 @@ DetectLabelsResultData(
 ```
 </details>
 
+---
+### Collections
+The **face collection** is the primary Amazon Rekognition resource. A collection is a **container for faces** that you want to **search**, **compare**, or **store**.
+
+Check out [Managing Face Collections, Faces, and Users](https://docs.aws.amazon.com/rekognition/latest/dg/managing-face-collections.html#managing-collections) for more details.
+
+#### Create Collection
+Creates a collection in an AWS Region.
+
+To create a collection, you need to create an instance of [`CreateCollectionData`](src/Data/CreateCollectionData.php) object:
+```php
+// Create a CreateCollectionData object
+$createCollectionData = new CreateCollectionData(
+    collectionId: 'your_collection_id', // Unique identifier for the collection
+    tags        : ['tag_key' => 'tag_value'], // Optional tags for the collection (A set of tags key-value pairs that you want to attach to the collection)
+);
+```
+
+Then, you can send the request using the `Rekognition` facade `createCollection` method:
+```php
+$response = Rekognition::createCollection($createCollectionData);
+```
+
+Response will be an instance of [`CreateCollectionResultData`](src/Data/ResultData/CreateCollectionResultData.php) object.
+> [!TIP]
+> `CreateCollectionResultData` contains the `collectionArn` - **Amazon Resource Name (ARN)** of the collection. You can use this to manage **permissions** on your resources.
+> 
+> Please refer to [Identify AWS resources with Amazon Resource Names (ARNs)](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html) for more details.
+
+<details>
+<summary>This is the sample CreateCollectionResultData:</summary>
+
+```php
+CreateCollectionResultData(
+    collectionArn: "arn:aws:rekognition:us-east-1:123456789010:collection/your_collection_id",
+    faceModelVersion: "7.0",
+    statusCode: 200,
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+#### Delete Collection
+Deletes the specified collection with the provided `collectionId`.
+
+> [!WARNING]
+> **Deleting a collection** also **removes all faces** in the collection.
+
+To delete a collection, you need to create an instance of [`DeleteCollectionData`](src/Data/DeleteCollectionData.php) object:
+```php
+// Create a DeleteCollectionData object
+$deleteCollectionData = new DeleteCollectionData(
+    collectionId: 'your_collection_id', // Unique identifier for the collection
+);
+```
+
+Then, you can send the request using the `Rekognition` facade `deleteCollection` method:
+```php
+$response = Rekognition::deleteCollection($deleteCollectionData);
+```
+
+Response will be an instance of [`DeleteCollectionResultData`](src/Data/ResultData/DeleteCollectionResultData.php) object.
+
+<details>
+<summary>This is the sample DeleteCollectionResultData:</summary>
+
+```php
+DeleteCollectionResultData(
+    statusCode: 200,
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+#### List Collections
+Returns the list of collections in the AWS account.
+
+To list collections, you need to create an instance of [`ListCollectionsData`](src/Data/ListCollectionsData.php) object:
+```php
+// Create a ListCollectionsData object.
+$listCollectionsData = new ListCollectionsData(
+    maxResults: 10, // Maximum number of collection IDs to return - optional
+    nextToken : 'your_next_token', // Pagination token from the previous response - optional
+);
+```
+
+Then, you can send the request using the `Rekognition` facade `listCollections` method:
+```php
+$response = Rekognition::listCollections($listCollectionsData);
+```
+
+Response will be an instance of [`ListCollectionsResultData`](src/Data/ResultData/ListCollectionsResultData.php) object.
+
+<details>
+<summary>This is the sample ListCollectionsResultData:</summary>
+
+```php
+ListCollectionsResultData(
+    collectionIds: [
+        "your_collection_id_0",
+        "your_collection_id_1",
+    ],
+    faceModelVersions: [
+        "7.0",
+        "7.0",
+    ],
+    nextToken: "your_next_token",
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+---
 ## 💫 Contributing
 
 > **Your contributions are welcome!** If you'd like to improve this package, simply create a pull request with your changes. Your efforts help enhance its functionality and documentation.
