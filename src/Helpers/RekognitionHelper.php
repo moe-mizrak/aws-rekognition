@@ -109,7 +109,7 @@ final readonly class RekognitionHelper
     public function formCreateUserResponse(array $response): CreateUserResultData
     {
         return new CreateUserResultData(
-            metadata  : $this->retrieveMetaData($response),
+            metadata: $this->retrieveMetaData($response),
         );
     }
 
