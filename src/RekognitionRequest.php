@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace MoeMizrak\Rekognition;
 
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
+use MoeMizrak\Rekognition\Data\CreateUserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
 use MoeMizrak\Rekognition\Data\ListCollectionsData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateCollectionResultData;
+use MoeMizrak\Rekognition\Data\ResultData\CreateUserResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
 use MoeMizrak\Rekognition\Data\ResultData\ListCollectionsResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DetectLabelsResultData;
@@ -85,5 +87,22 @@ final readonly class RekognitionRequest extends RekognitionAPI
 
         // Form the response before returning it.
         return $this->rekognitionHelper->formDeleteCollectionResponse($response->toArray());
+    }
+
+    /**
+     * Creates a new User within a collection specified by collectionId.
+     * Note! CreateUserData takes userId as a parameter, which is a user provided id which should be unique within the collection.
+     *
+     * @param CreateUserData $createUserData
+     *
+     * @return CreateUserResultData
+     */
+    public function createUser(CreateUserData $createUserData): CreateUserResultData
+    {
+        // Send the request to AWS Rekognition API for creating a user.
+        $response = $this->client->createUser($createUserData->toRekognitionDataFormat());
+
+        // Form the response before returning it.
+        return $this->rekognitionHelper->formCreateUserResponse($response->toArray());
     }
 }

@@ -10,6 +10,7 @@ use MoeMizrak\Rekognition\Data\ResultData\BackgroundData;
 use MoeMizrak\Rekognition\Data\ResultData\BoundingBoxData;
 use MoeMizrak\Rekognition\Data\ResultData\CategoryData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateCollectionResultData;
+use MoeMizrak\Rekognition\Data\ResultData\CreateUserResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DominantColorsData;
 use MoeMizrak\Rekognition\Data\ResultData\ForegroundData;
@@ -94,6 +95,21 @@ final readonly class RekognitionHelper
             orientationCorrection: Arr::get($response, 'OrientationCorrection'),
             imageProperties      : $this->retrieveImageProperties($response),
             metadata             : $this->retrieveMetaData($response),
+        );
+    }
+
+    /**
+     * Forms the Rekognition create user response to CreateUserResultData including metadata.
+     * Note: The results for this operation are always empty, only metadata is returned.
+     *
+     * @param array $response
+     *
+     * @return CreateUserResultData
+     */
+    public function formCreateUserResponse(array $response): CreateUserResultData
+    {
+        return new CreateUserResultData(
+            metadata: $this->retrieveMetaData($response),
         );
     }
 

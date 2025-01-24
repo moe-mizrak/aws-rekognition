@@ -3,6 +3,7 @@
 namespace MoeMizrak\Rekognition\Tests;
 
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
+use MoeMizrak\Rekognition\Data\CreateUserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
 use MoeMizrak\Rekognition\Data\ImageData;
@@ -139,5 +140,25 @@ class RekognitionRequestTest extends TestCase
         /* ASSERT */
         $this->metaDataAssertions($response);
         $this->assertEquals(200, $response->statusCode);
+    }
+
+    #[Test]
+    public function it_tests_create_user_request()
+    {
+        /* SETUP */
+        $methodName = 'createUser';
+        $collectionId = 'test_collection_id';
+        $userId = 'test_user_id';
+        $createUserData = new CreateUserData(
+            collectionId: $collectionId,
+            userId: $userId,
+        );
+        $this->mockRekognitionClient($methodName);
+
+        /* EXECUTE */
+        $response = Rekognition::createUser($createUserData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
     }
 }
