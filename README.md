@@ -21,6 +21,7 @@ Laravel package for AWS Rekognition API (PHP 8)
     - [Create Collection](#create-collection)
     - [Delete Collection](#delete-collection)
     - [List Collections](#list-collections)
+  - [Create User](#create-user)
 - [💫 Contributing](#-contributing)
 - [📜 License](#-license)
 
@@ -98,6 +99,7 @@ Following **Rekognition API** operations are supported:
   - [Create Collection](#create-collection)
   - [Delete Collection](#delete-collection)
   - [List Collections](#list-collections)
+- [Create User](#create-user)
 
 > [!TIP]
 > All classes include **comprehensive** DocBlock **comments** and **detailed documentation** to enhance readability and understanding.
@@ -512,6 +514,62 @@ ListCollectionsResultData(
         "7.0",
     ],
     nextToken: "your_next_token",
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+---
+### Create User
+Creates a **new user** within a **collection** specified by **collectionId**.
+
+To create a user, you need to create an instance of [`CreateUserData`](src/Data/CreateUserData.php) object:
+```php
+// Create a CreateUserData object
+$createUserData = new CreateUserData(
+    collectionId: 'your_collection_id', 
+    userId      : 'your_user_id',
+    /*
+     * Optional - Idempotent token used to identify the request to createUser. 
+     * If you use the same token with multiple createUser requests, the same response is returned.
+     * Use clientRequestToken to prevent the same request from being processed more than once.
+     */
+    clientRequestToken: 'your_client_request_token',
+);
+```
+
+> [!NOTE]
+> `userId` needs to be unique within the collection.
+
+Then, you can send the request using the `Rekognition` facade `createUser` method:
+```php
+$response = Rekognition::createUser($createUserData);
+```
+
+Response will be an instance of [`CreateUserResultData`](src/Data/ResultData/CreateUserResultData.php) object.
+
+> [!NOTE]
+> The result for the `createUser` request is always empty, only metadata is returned in `CreateUserResultData`.
+
+<details>
+<summary>This is the sample CreateUserResultData:</summary>
+
+```php
+CreateUserResultData(
     metadata: MetadataData(
         statusCode: 200,
         effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
