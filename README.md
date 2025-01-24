@@ -535,7 +535,7 @@ ListCollectionsResultData(
 
 ---
 ### Create User
-Creates a **new user** within a **collection** specified by **collectionId**.
+Creates a **new user** within a **collection** specified by **collectionId** and **unique userId**.
 
 To create a user, you need to create an instance of [`CreateUserData`](src/Data/CreateUserData.php) object:
 ```php
