@@ -8,10 +8,12 @@ use MoeMizrak\Rekognition\Data\CreateCollectionData;
 use MoeMizrak\Rekognition\Data\CreateUserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
+use MoeMizrak\Rekognition\Data\IndexFacesData;
 use MoeMizrak\Rekognition\Data\ListCollectionsData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateCollectionResultData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateUserResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
+use MoeMizrak\Rekognition\Data\ResultData\IndexFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\ListCollectionsResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DetectLabelsResultData;
 
@@ -104,5 +106,22 @@ final readonly class RekognitionRequest extends RekognitionAPI
 
         // Form the response before returning it.
         return $this->rekognitionHelper->formCreateUserResponse($response->toArray());
+    }
+
+
+    /**
+     * Detects faces in the input image and adds them to the specified collection.
+     *
+     * @param IndexFacesData $indexFacesData
+     *
+     * @return IndexFacesResultData
+     */
+    public function indexFaces(IndexFacesData $indexFacesData): IndexFacesResultData
+    {
+        // Send the request to AWS Rekognition API for indexing faces.
+        $response = $this->client->indexFaces($indexFacesData->toRekognitionDataFormat());
+
+        // Form the response before returning it.
+        return $this->rekognitionHelper->formIndexFacesResponse($response->toArray());
     }
 }
