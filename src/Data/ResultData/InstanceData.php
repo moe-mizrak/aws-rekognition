@@ -18,18 +18,18 @@ final class InstanceData extends Data
 {
     public function __construct(
         /*
-         * The position of the label instance on the image.
-         *
-         * @param BoundingBoxData|null
-         */
-        public ?BoundingBoxData $boundingBox = null,
-
-        /*
          * The confidence that Amazon Rekognition has in the accuracy of the bounding box.
          *
          * @param float|null
          */
         public ?float $confidence = null,
+
+        /*
+         * The position of the label instance on the image.
+         *
+         * @param BoundingBoxData|null
+         */
+        public ?BoundingBoxData $boundingBox = null,
 
         /*
          * The dominant colors found in an individual instance of a label.

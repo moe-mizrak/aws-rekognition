@@ -7,6 +7,7 @@ use MoeMizrak\Rekognition\Data\CreateUserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
 use MoeMizrak\Rekognition\Data\ImageData;
+use MoeMizrak\Rekognition\Data\IndexFacesData;
 use MoeMizrak\Rekognition\Data\ListCollectionsData;
 use MoeMizrak\Rekognition\Data\S3ObjectData;
 use MoeMizrak\Rekognition\Facades\Rekognition;
@@ -87,7 +88,7 @@ class RekognitionRequestTest extends TestCase
     {
         /* SETUP */
         $methodName = 'createCollection';
-        $collectionId = 'test_collection_id_0';
+        $collectionId = 'test_collection_id';
         $createCollectionData = new CreateCollectionData(
             collectionId: $collectionId,
         );
@@ -128,7 +129,7 @@ class RekognitionRequestTest extends TestCase
     {
         /* SETUP */
         $methodName = 'deleteCollection';
-        $deleteCollectionId = 'test_collection_id_2';
+        $deleteCollectionId = 'test_collection_id';
         $deleteCollectionData = new DeleteCollectionData(
             collectionId: $deleteCollectionId,
         );
@@ -160,5 +161,37 @@ class RekognitionRequestTest extends TestCase
 
         /* ASSERT */
         $this->metaDataAssertions($response);
+    }
+
+    #[Test]
+    public function it_tests_index_faces_request()
+    {
+        /* SETUP */
+        $methodName = 'indexFaces';
+        $this->mockRekognitionClient($methodName);
+        $imagePath = __DIR__.'/resources/images/test_labels.jpg';
+        $image = file_get_contents($imagePath);
+        $imageData = new ImageData(
+            bytes: $image,
+        );
+        $indexFacesData = new IndexFacesData(
+            collectionId: 'test_collection_id',
+            image: $imageData,
+            maxFaces: 2,
+            externalImageId: 'test_external_image_id',
+            qualityFilter: 'AUTO',
+            detectionAttributes: ['ALL'],
+        );
+
+        /* EXECUTE */
+        $response = Rekognition::indexFaces($indexFacesData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertNotNull($response->faceModelVersion);
+        $this->assertNotNull($response->faceRecords);
+        $this->assertInstanceOf(DataCollection::class, $response->faceRecords);
+        $this->assertNotNull($response->unindexedFaces);
+        $this->assertInstanceOf(DataCollection::class, $response->unindexedFaces);
     }
 }

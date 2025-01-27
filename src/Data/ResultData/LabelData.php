@@ -18,6 +18,13 @@ final class LabelData extends Data
 {
     public function __construct(
         /*
+         * Level of confidence.
+         *
+         * @param float|null
+         */
+        public ?float $confidence = null,
+
+        /*
          * A list of potential aliases for a given label.
          *
          * @param DataCollection|null
@@ -32,13 +39,6 @@ final class LabelData extends Data
          */
         #[DataCollectionOf(CategoryData::class)]
         public ?DataCollection $categories = null,
-
-        /*
-         * Level of confidence.
-         *
-         * @param float|null
-         */
-        public ?float $confidence = null,
 
         /*
          * The name of the label.
