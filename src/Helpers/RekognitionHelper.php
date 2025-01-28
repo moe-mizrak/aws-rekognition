@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MoeMizrak\Rekognition\Helpers;
 
 use Illuminate\Support\Arr;
+use MoeMizrak\Rekognition\Data\ResultData\AssociateFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateCollectionResultData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateUserResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
@@ -119,6 +120,23 @@ final readonly class RekognitionHelper
             unindexedFaces       : $this->retrieveUnindexedFaces($response),
             orientationCorrection: Arr::get($response, 'OrientationCorrection'),
             metadata             : $this->retrieveMetaData($response),
+        );
+    }
+
+    /**
+     * Forms the Rekognition associate faces response to AssociateFacesResultData including associated faces, unsuccessful face associations, user status, and metadata.
+     *
+     * @param array $response
+     *
+     * @return AssociateFacesResultData
+     */
+    public function formAssociateFacesResponse(array $response): AssociateFacesResultData
+    {
+        return new AssociateFacesResultData(
+            associatedFaces             : $this->retrieveAssociatedFaces($response),
+            unsuccessfulFaceAssociations: $this->retrieveUnsuccessfulFaceAssociations($response),
+            userStatus                  : Arr::get($response, 'UserStatus'),
+            metadata                    : $this->retrieveMetaData($response),
         );
     }
 }
