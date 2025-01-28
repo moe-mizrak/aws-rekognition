@@ -23,6 +23,7 @@ Laravel package for AWS Rekognition API (PHP 8)
     - [List Collections](#list-collections)
   - [Create User](#create-user)
   - [Index Faces](#index-faces)
+  - [Associate Faces](#associate-faces)
 - [💫 Contributing](#-contributing)
 - [📜 License](#-license)
 
@@ -102,6 +103,7 @@ Following **Rekognition API** operations are supported:
   - [List Collections](#list-collections)
 - [Create User](#create-user)
 - [Index Faces](#index-faces)
+- [Associate Faces](#associate-faces)
 
 > [!TIP]
 > All classes include **comprehensive** DocBlock **comments** and **detailed documentation** to enhance readability and understanding.
@@ -788,6 +790,82 @@ IndexFacesResultData(
         ),
         ...
     ]),
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+---
+### Associate Faces
+**Associates** one or more **faces** with an existing **userId**.
+
+To associate faces, you need to create an instance of [`AssociateFacesData`](src/Data/AssociateFacesData.php) object:
+```php
+// Create an AssociateFacesData object
+$associateFacesData = new AssociateFacesData(
+    collectionId      : 'test_collection_id', // The id of an existing collection containing the userId - required
+    faceIds           : ['8e2ad714-4d23-43c0-b9ad-9fab136bef13', 'ed49afb4-b45b-468e-9614-d652c924cd4a'], // An array of faceIds to associate with the userId - required
+    userId            : 'test_user_id', // The userId to associate with the faceIds. (The id for the existing userId.) - required
+    userMatchThreshold: 80.0, // An optional value specifying the minimum confidence in the userId match to return - optional
+    clientRequestToken: 'test_client_request_token', // Idempotent token used to identify the request to associate faces - optional
+);
+```
+
+> [!NOTE]
+> 1) The maximum number of total **faceIds** per **userId** is **100**.
+> 2) `userMatchThreshold`: The default value is **75.0**.
+> 3) `clientRequestToken`: If you use the **same token** with multiple **associate faces** requests, the **same response** is returned.
+> Use **clientRequestToken** to **prevent** the **same request** from being processed **more than once**.
+
+Then, you can send the request using the `Rekognition` facade `associateFaces` method:
+```php
+$response = Rekognition::associateFaces($associateFacesData);
+```
+
+Response will be an instance of [`AssociateFacesResultData`](src/Data/ResultData/AssociateFacesResultData.php) object.
+
+<details>
+<summary>This is the sample AssociateFacesResultData:</summary>
+
+```php
+AssociateFacesResultData(
+    associatedFaces: DataCollection([
+        AssociatedFaceData(
+            faceId: "8e2ad714-4d23-43c0-b9ad-9fab136bef13",
+        ),
+        AssociatedFaceData(
+            faceId: "ed49afb4-b45b-468e-9614-d652c924cd4a",
+        ),
+    ]),
+    unsuccessfulFaceAssociations: DataCollection([
+        UnsuccessfulFaceAssociationData(
+            confidence: 70.0,
+            faceId: "6e2ad714-4d23-43c0-b9ad-9fab136bef19",
+            reasons: ["LOW_CONFIDENCE"],
+            userId: "test_user_id",
+        ),
+        UnsuccessfulFaceAssociationData(
+            confidence: 80.0,
+            faceId: "5f2ad714-4d23-43c0-b9ad-9fab136bef15",
+            reasons: ["LOW_QUALITY"],
+            userId: "test_user_id",
+        ),
+    ]),
+    userStatus: "UPDATING",
     metadata: MetadataData(
         statusCode: 200,
         effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
