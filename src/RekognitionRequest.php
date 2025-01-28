@@ -18,6 +18,8 @@ use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
 use MoeMizrak\Rekognition\Data\ResultData\IndexFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\ListCollectionsResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DetectLabelsResultData;
+use MoeMizrak\Rekognition\Data\ResultData\SearchUsersByImageResultData;
+use MoeMizrak\Rekognition\Data\SearchUsersByImageData;
 
 /**
  * RekognitionRequest is the class that sends requests to AWS Rekognition API.
@@ -141,5 +143,22 @@ final readonly class RekognitionRequest extends RekognitionAPI
 
         // Form the response before returning it.
         return $this->rekognitionHelper->formAssociateFacesResponse($response->toArray());
+    }
+
+    /**
+     * Searches for userIds using a supplied image.
+     * It first detects the largest face in the image, and then searches a specified collection for matching userIds.
+     *
+     * @param SearchUsersByImageData $searchUsersByImageData
+     *
+     * @return SearchUsersByImageResultData
+     */
+    public function searchUsersByImage(SearchUsersByImageData $searchUsersByImageData): SearchUsersByImageResultData
+    {
+        // Send the request to AWS Rekognition API for searching users by image.
+        $response = $this->client->searchUsersByImage($searchUsersByImageData->toRekognitionDataFormat());
+
+        // Form the response before returning it.
+        return $this->rekognitionHelper->formSearchUsersByImageResponse($response->toArray());
     }
 }

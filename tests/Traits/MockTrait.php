@@ -23,14 +23,15 @@ trait MockTrait
     protected function mockRekognitionResponse(string $methodName): Result
     {
         return match ($methodName) {
-            'detectLabels'     => $this->mockDetectLabelsBody(),
-            'createCollection' => $this->mockCreateCollectionBody(),
-            'deleteCollection' => $this->mockDeleteCollectionBody(),
-            'listCollections'  => $this->mockListCollectionsBody(),
-            'createUser'       => $this->mockCreateUserBody(),
-            'indexFaces'       => $this->mockIndexFacesBody(),
-            'associateFaces'   => $this->mockAssociateFacesBody(),
-            default            => new Result([]),
+            'detectLabels'       => $this->mockDetectLabelsBody(),
+            'createCollection'   => $this->mockCreateCollectionBody(),
+            'deleteCollection'   => $this->mockDeleteCollectionBody(),
+            'listCollections'    => $this->mockListCollectionsBody(),
+            'createUser'         => $this->mockCreateUserBody(),
+            'indexFaces'         => $this->mockIndexFacesBody(),
+            'associateFaces'     => $this->mockAssociateFacesBody(),
+            'searchUsersByImage' => $this->mockSearchUsersByImageBody(),
+            default              => new Result([]),
         };
     }
 
@@ -482,6 +483,69 @@ trait MockTrait
                 ],
             ],
             "UserStatus" => "UPDATING",
+            "@metadata" => $this->mockMetadata(),
+        ];
+
+        return new Result($data);
+    }
+
+    /**
+     * Mock the search users by image response body. This is the response that would be returned from the AWS Rekognition API searchUsersByImage call.
+     *
+     * @return Result
+     */
+    private function mockSearchUsersByImageBody(): Result
+    {
+        $data = [
+            'FaceModelVersion' => '7.0',
+            'SearchedFace' => [
+                'FaceDetail' => [
+                    'BoundingBox' => [
+                        'Height' => 0.075100161135197,
+                        'Left' => 0.35986787080765,
+                        'Top' => 0.53915268182755,
+                        'Width' => 0.036928374320269,
+                    ],
+                ],
+            ],
+            'UnsearchedFaces' => [
+                [
+                    // todo maybe for the example, it is wong, maybe it is just faceDetail
+                    'FaceDetails' => [
+                        'BoundingBox' => [
+                            'Height' => 0.068217702209949,
+                            'Left' => 0.610256254673,
+                            'Top' => 0.5593535900116,
+                            'Width' => 0.031677018851042,
+                        ],
+                    ],
+                    'Reasons' => [
+                        'FACE_NOT_LARGEST',
+                    ],
+                ],
+                [
+                    'FaceDetails' => [
+                        'BoundingBox' => [
+                            'Height' => 0.063479974865913,
+                            'Left' => 0.51606231927872,
+                            'Top' => 0.60803580284119,
+                            'Width' => 0.032544497400522,
+                        ],
+                    ],
+                    'Reasons' => [
+                        'FACE_NOT_LARGEST',
+                    ],
+                ],
+            ],
+            'UserMatches' => [
+                [
+                    'Similarity' => 99.881866455078,
+                    'User' => [
+                        'UserId' => 'test_user_id',
+                        'UserStatus' => 'ACTIVE',
+                    ],
+                ],
+            ],
             "@metadata" => $this->mockMetadata(),
         ];
 

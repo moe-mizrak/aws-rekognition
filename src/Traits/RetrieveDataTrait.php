@@ -25,16 +25,20 @@ use MoeMizrak\Rekognition\Data\ResultData\ImagePropertiesData;
 use MoeMizrak\Rekognition\Data\ResultData\InstanceData;
 use MoeMizrak\Rekognition\Data\ResultData\LabelData;
 use MoeMizrak\Rekognition\Data\ResultData\LandmarkData;
+use MoeMizrak\Rekognition\Data\ResultData\MatchedUserData;
 use MoeMizrak\Rekognition\Data\ResultData\MetaData;
 use MoeMizrak\Rekognition\Data\ResultData\MouthOpenData;
 use MoeMizrak\Rekognition\Data\ResultData\MustacheData;
 use MoeMizrak\Rekognition\Data\ResultData\ParentData;
 use MoeMizrak\Rekognition\Data\ResultData\PoseData;
 use MoeMizrak\Rekognition\Data\ResultData\QualityData;
+use MoeMizrak\Rekognition\Data\ResultData\SearchedFaceData;
 use MoeMizrak\Rekognition\Data\ResultData\SmileData;
 use MoeMizrak\Rekognition\Data\ResultData\SunglassesData;
 use MoeMizrak\Rekognition\Data\ResultData\UnindexedFaceData;
+use MoeMizrak\Rekognition\Data\ResultData\UnsearchedFaceData;
 use MoeMizrak\Rekognition\Data\ResultData\UnsuccessfulFaceAssociationData;
+use MoeMizrak\Rekognition\Data\ResultData\UserMatchData;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -713,5 +717,89 @@ trait RetrieveDataTrait
         }
 
         return new DataCollection(UnsuccessfulFaceAssociationData::class, $unsuccessfulFaceAssociations);
+    }
+
+    /**
+     * Retrieves the user matches data of the response including similarity and matched user data.
+     *
+     * @param array $response
+     *
+     * @return DataCollection
+     */
+    protected function retrieveUserMatches(array $response): DataCollection
+    {
+        $userMatches = [];
+        $returnedUserMatches = Arr::get($response, 'UserMatches', []);
+
+        foreach ($returnedUserMatches as $returnedUserMatch) {
+            $returnedMatchedUserData = Arr::get($returnedUserMatch, 'User');
+            $matchedUser = new MatchedUserData(
+                userId    : Arr::get($returnedMatchedUserData, 'UserId'),
+                userStatus: Arr::get($returnedMatchedUserData, 'UserStatus'),
+            );
+
+            $userMatch = new UserMatchData(
+                similarity: Arr::get($returnedUserMatch, 'Similarity'),
+                user      : $matchedUser,
+            );
+
+            $userMatches[] = $userMatch;
+        }
+
+        return new DataCollection(UserMatchData::class, $userMatches);
+    }
+
+    /**
+     * Retrieves the searched face data of the response including face detail.
+     *
+     * @param array $response
+     *
+     * @return SearchedFaceData
+     */
+    protected function retrieveSearchedFace(array $response): SearchedFaceData
+    {
+        $returnedSearchedFace = Arr::get($response, 'SearchedFace');
+
+        return new SearchedFaceData(
+            faceDetail: $this->retrieveFaceDetailData($returnedSearchedFace),
+        );
+    }
+
+    /**
+     * Retrieves the unsearched faces of the response including face detail and reasons.
+     *
+     * @param array $response
+     *
+     * @return DataCollection
+     */
+    protected function retrieveUnsearchedFaces(array $response): DataCollection
+    {
+        $unsearchedFaces = [];
+        $returnedUnsearchedFaces = Arr::get($response, 'UnsearchedFaces', []);
+
+        foreach ($returnedUnsearchedFaces as $returnedUnsearchedFace) {
+            $reasons = Arr::get($returnedUnsearchedFace, 'Reasons');
+
+            /*
+             * Warning!
+             * Here we are changing the key of the array from 'FaceDetails' to 'FaceDetail'
+             * in order to match the key of the retrieveFaceDetailData method which how it is being used any other place in the API response.
+             * It might be a bug on the AWS side, or on purpose so we are fixing it here for consistency with the rest of the code.
+             */
+            $returnedUnsearchedFace = Arr::add(
+                array: Arr::except($returnedUnsearchedFace, 'FaceDetails'),
+                key  : 'FaceDetail',
+                value: Arr::get($returnedUnsearchedFace, 'FaceDetails')
+            );
+
+            $unsearchedFace = new UnsearchedFaceData(
+                faceDetail: $this->retrieveFaceDetailData($returnedUnsearchedFace),
+                reasons   : $reasons,
+            );
+
+            $unsearchedFaces[] = $unsearchedFace;
+        }
+
+        return new DataCollection(UnsearchedFaceData::class, $unsearchedFaces);
     }
 }
