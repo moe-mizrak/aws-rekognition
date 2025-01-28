@@ -22,6 +22,7 @@ Laravel package for AWS Rekognition API (PHP 8)
     - [Delete Collection](#delete-collection)
     - [List Collections](#list-collections)
   - [Create User](#create-user)
+  - [Index Faces](#index-faces)
 - [💫 Contributing](#-contributing)
 - [📜 License](#-license)
 
@@ -100,6 +101,7 @@ Following **Rekognition API** operations are supported:
   - [Delete Collection](#delete-collection)
   - [List Collections](#list-collections)
 - [Create User](#create-user)
+- [Index Faces](#index-faces)
 
 > [!TIP]
 > All classes include **comprehensive** DocBlock **comments** and **detailed documentation** to enhance readability and understanding.
@@ -541,8 +543,8 @@ To create a user, you need to create an instance of [`CreateUserData`](src/Data/
 ```php
 // Create a CreateUserData object
 $createUserData = new CreateUserData(
-    collectionId: 'your_collection_id', 
-    userId      : 'your_user_id',
+    collectionId      : 'your_collection_id', // The ID of an existing collection - required
+    userId            : 'your_user_id', // ID for the user id to be created. This user id needs to be unique within the collection. - required
     /*
      * Optional - Idempotent token used to identify the request to createUser. 
      * If you use the same token with multiple createUser requests, the same response is returned.
@@ -570,6 +572,222 @@ Response will be an instance of [`CreateUserResultData`](src/Data/ResultData/Cre
 
 ```php
 CreateUserResultData(
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+---
+### Index Faces
+**Detects faces** in the **input image** and **adds** them to the **specified collection**.
+
+First of all, you need to create an instance of [`ImageData`](src/Data/ImageData.php) object by providing the **image bytes** of an image file.
+```php
+// Path to the image file
+$imagePath = __DIR__.'/resources/images/test_labels.jpg';
+// Read the image file into bytes
+$image = file_get_contents($imagePath);
+// Create an ImageData object
+$imageData = new ImageData(
+    bytes: $image,
+);
+```
+
+<details>
+<summary>Alternatively, you can use S3 as the image source:</summary>
+
+```php
+// Create an S3ObjectData object
+$s3Object = new S3ObjectData(
+    bucket: 'your_bucket_name',
+    name  : 'your_image_name.jpg',
+);
+// Create an ImageData object by providing the S3 object
+$imageData = new ImageData(
+    s3Object: $s3Object,
+);
+```
+
+For more details, see [S3Object](https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html#shape-s3object) section.
+</details>
+
+Then, in order to **index faces**, you need to create an instance of [`IndexFacesData`](src/Data/IndexFacesData.php) object:
+```php
+// Create an IndexFacesData object
+$indexFacesData = new IndexFacesData(
+    collectionId       : 'your_collection_id', // The ID of an existing collection - required
+    image              : $imageData, // The input image as ImageData object - required
+    maxFaces           : 2, // Maximum number of faces to index - optional
+    qualityFilter      : 'AUTO', // The quality filter for the face detection - optional
+    externalImageId    : 'your_external_image_id', // ID you want to assign to all the faces detected in the image - optional
+    detectionAttributes: ['ALL'], // An array of facial attributes you want to be returned - optional
+);
+```
+
+> [!NOTE]
+> 1) `detectionAttributes`: Requesting more attributes may increase response time.
+> 2) `maxFaces`: IndexFaces returns no more than 100 detected faces in an image, even if you specify a larger value for **maxFaces**.
+
+Then, you can send the request using the `Rekognition` facade `indexFaces` method:
+```php
+$response = Rekognition::indexFaces($indexFacesData);
+```
+
+Response will be an instance of [`IndexFacesResultData`](src/Data/ResultData/IndexFacesResultData.php) object.
+
+<details>
+<summary>This is the sample IndexFacesResultData:</summary>
+
+```php
+IndexFacesResultData(
+    faceModelVersion: "7.0",
+    faceRecords: DataCollection([
+        FaceRecordData(
+            face: FaceData(
+                confidence: 99.406089782715,
+                boundingBox: BoundingBoxData(
+                    width: 0.4137507379055,
+                    height: 0.74068546295166,
+                    left: 0.0,
+                    top: 0.25919502973557,
+                ),
+                faceId: "your_face_id_0",
+                userId: "your_user_id",
+                imageId: "your_image_id",
+                externalImageId: "your_external_image_id",
+                indexFacesModelVersion: "7.0",
+            ),
+            faceDetail: FaceDetailData(
+                confidence: 99.406089782715,
+                boundingBox: BoundingBoxData(
+                    width: 0.4737507379055,
+                    height: 0.72068546295166,
+                    left: 0.0,
+                    top: 0.28919502973557,
+                ),
+                ageRange: AgeRangeData(
+                    low: 20,
+                    high: 30,
+                ),
+                emotions: DataCollection([
+                    EmotionData(
+                        type: "HAPPY",
+                        confidence: 99.406089782715,
+                    ),
+                    EmotionData(
+                        type: "SURPRISED",
+                        confidence: 98.74324798584,
+                    ),
+                ]),
+                eyeDirection: EyeDirectionData(
+                    confidence: 99.406089782715,
+                    yaw: 0.0,
+                    pitch: 0.0,
+                ),
+                ...
+            )
+        ),
+        FaceRecordData(
+            face: FaceData(
+                confidence: 97.406089782715,
+                boundingBox: BoundingBoxData(
+                    width: 0.4237507379055,
+                    height: 0.70068546295166,
+                    left: 0.8,
+                    top: 0.28919502973557,
+                ),
+                faceId: "your_face_id_1",
+                userId: "your_user_id",
+                imageId: "your_image_id",
+                externalImageId: "your_external_image_id",
+                indexFacesModelVersion: "7.0",
+            ),
+            faceDetail: FaceDetailData(
+                confidence: 96.406089782715,
+                boundingBox: BoundingBoxData(
+                    width: 0.4737507379055,
+                    height: 0.72068546295166,
+                    left: 0.0,
+                    top: 0.28919502973557,
+                ),
+                ageRange: AgeRangeData(
+                    low: 25,
+                    high: 35,
+                ),
+                emotions: DataCollection([
+                    EmotionData(
+                        type: "CALM",
+                        confidence: 96.406089782715,
+                    ),
+                    EmotionData(
+                        type: "CONFUSED",
+                        confidence: 99.74324798584,
+                    ),
+                ]),
+                eyeglasses: EyeglassesData(
+                    confidence: 99.406089782715,
+                    value: true,
+                ),
+                eyesOpen: EyesOpenData(
+                    confidence: 99.496089782715,
+                    value: true,
+                ),
+                ...
+            )
+        ),
+        ...
+    ]),
+    unindexedFaces: DataCollection([
+        UnindexedFaceData(
+            reason: "LOW_CONFIDENCE",
+            faceDetail: FaceDetailData(
+                confidence: 66.406089782715,
+                boundingBox: BoundingBoxData(
+                    width: 0.4737507379055,
+                    height: 0.72068546295166,
+                    left: 0.0,
+                    top: 0.28919502973557,
+                ),
+                ageRange: AgeRangeData(
+                    low: 25,
+                    high: 35,
+                ),
+                ...
+            )
+        ),
+        UnindexFaceData(
+           reason: "EXCEEDS_MAX_FACES",
+           faceDetail: FaceDetailData(
+             confidence: 86.406089782715,
+             boundingBox: BoundingBoxData(
+                  width: 0.4737507379055,
+                  height: 0.72068546295166,
+                  left: 0.0,
+                  top: 0.28919502973557,
+             ),
+             ageRange: AgeRangeData(
+                  low: 45,
+                  high: 55,
+             ),
+             ...
+           )
+        ),
+        ...
+    ]),
     metadata: MetadataData(
         statusCode: 200,
         effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
