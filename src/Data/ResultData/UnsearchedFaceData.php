@@ -18,7 +18,6 @@ final class UnsearchedFaceData extends Data
     public function __construct(
         /*
          * Structure containing attributes of the face that the algorithm detected.
-         * Note: Although same field in different operations are 'faceDetail', here it is 'faceDetails' (plural).
          *
          * @param FaceDetailData|null
          */
