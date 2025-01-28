@@ -10,7 +10,10 @@ use MoeMizrak\Rekognition\Data\DetectLabelsData;
 use MoeMizrak\Rekognition\Data\ImageData;
 use MoeMizrak\Rekognition\Data\IndexFacesData;
 use MoeMizrak\Rekognition\Data\ListCollectionsData;
+use MoeMizrak\Rekognition\Data\ResultData\SearchedFaceData;
+use MoeMizrak\Rekognition\Data\ResultData\SearchUsersByImageResultData;
 use MoeMizrak\Rekognition\Data\S3ObjectData;
+use MoeMizrak\Rekognition\Data\SearchUsersByImageData;
 use MoeMizrak\Rekognition\Facades\Rekognition;
 use PHPUnit\Framework\Attributes\Test;
 use Spatie\LaravelData\DataCollection;
@@ -220,5 +223,38 @@ class RekognitionRequestTest extends TestCase
         $this->assertNotNull($response->unsuccessfulFaceAssociations);
         $this->assertInstanceOf(DataCollection::class, $response->unsuccessfulFaceAssociations);
         $this->assertEquals("UPDATING", $response->userStatus);
+    }
+
+    #[Test]
+    public function it_tests_search_users_by_image_request()
+    {
+        /* SETUP */
+        $methodName = 'searchUsersByImage';
+        $this->mockRekognitionClient($methodName);
+        $imagePath = __DIR__.'/resources/images/test_labels.jpg';
+        $image = file_get_contents($imagePath);
+        $imageData = new ImageData(
+            bytes: $image,
+        );
+        $searchUsersByImageData = new SearchUsersByImageData(
+            collectionId: 'test_collection_id',
+            image: $imageData,
+            maxUsers: 2,
+            userMatchThreshold: 80.0,
+            qualityFilter: 'MEDIUM',
+        );
+
+        /* EXECUTE */
+        $response = Rekognition::searchUsersByImage($searchUsersByImageData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertNotNull($response->faceModelVersion);
+        $this->assertNotNull($response->userMatches);
+        $this->assertInstanceOf(DataCollection::class, $response->userMatches);
+        $this->assertNotNull($response->searchedFace);
+        $this->assertInstanceOf(SearchedFaceData::class, $response->searchedFace);
+        $this->assertNotNull($response->unsearchedFaces);
+        $this->assertInstanceOf(DataCollection::class, $response->unsearchedFaces);
     }
 }
