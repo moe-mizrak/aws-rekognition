@@ -24,6 +24,7 @@ Laravel package for AWS Rekognition API (PHP 8)
   - [Create User](#create-user)
   - [Index Faces](#index-faces)
   - [Associate Faces](#associate-faces)
+  - [Search Users By Image](#search-users-by-image)
 - [💫 Contributing](#-contributing)
 - [📜 License](#-license)
 
@@ -104,6 +105,7 @@ Following **Rekognition API** operations are supported:
 - [Create User](#create-user)
 - [Index Faces](#index-faces)
 - [Associate Faces](#associate-faces)
+- [Search Users By Image](#search-users-by-image)
 
 > [!TIP]
 > All classes include **comprehensive** DocBlock **comments** and **detailed documentation** to enhance readability and understanding.
@@ -866,6 +868,157 @@ AssociateFacesResultData(
         ),
     ]),
     userStatus: "UPDATING",
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+---
+### Search Users By Image
+**Searches** for **userId**s using a **supplied image**. It first **detects** the **largest face** in the image, and then **searches** a specified collection for matching **userId**s.
+
+First of all, you need to create an instance of [`ImageData`](src/Data/ImageData.php) object by providing the **image bytes** of an image file.
+```php
+// Path to the image file
+$imagePath = __DIR__.'/resources/images/test_labels.jpg';
+// Read the image file into bytes
+$image = file_get_contents($imagePath);
+// Create an ImageData object
+$imageData = new ImageData(
+    bytes: $image,
+);
+```
+
+<details>
+<summary>Alternatively, you can use S3 as the image source:</summary>
+
+```php
+// Create an S3ObjectData object
+$s3Object = new S3ObjectData(
+    bucket: 'your_bucket_name',
+    name  : 'your_image_name.jpg',
+);
+// Create an ImageData object by providing the S3 object
+$imageData = new ImageData(
+    s3Object: $s3Object,
+);
+```
+
+For more details, see [S3Object](https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html#shape-s3object) section.
+</details>
+
+Then, in order to **search users by image**, you need to create an instance of [`SearchUsersByImageData`](src/Data/SearchUsersByImageData.php) object:
+```php
+// Create a SearchUsersByImageData object
+$searchUsersByImageData = new SearchUsersByImageData(
+    collectionId      : 'test_collection_id', // The id of an existing collection containing the userId - required
+    image             : $imageData, // Provides the input image either as bytes or an S3 object - required
+    maxUsers          : 2, // Maximum number of userIds to return - optional
+    userMatchThreshold: 80.0, // Specifies the minimum confidence in the UserID match to return - optional
+    qualityFilter     : 'MEDIUM', // A filter that specifies a quality bar for how much filtering is done to identify faces - optional
+);
+```
+
+> [!NOTE]
+> 1) `userMatchThreshold`: The default value is **80.0**
+> 2) `qualityFilter`: The default value is **NONE**.
+
+Then, you can send the request using the `Rekognition` facade `searchUsersByImage` method:
+```php
+$response = Rekognition::searchUsersByImage($searchUsersByImageData);
+```
+
+Response will be an instance of [`SearchUsersByImageResultData`](src/Data/ResultData/SearchUsersByImageResultData.php) object.
+
+<details>
+<summary>This is the sample SearchUsersByImageResultData:</summary>
+
+```php
+SearchUsersByImageResultData(
+    faceModelVersion: "7.0",
+    userMatches: DataCollection([
+        UserMatchData(
+            similarity: 99.406089782715,
+            user: MatchedUserData(
+                userId: "test_user_id",
+                userStatus: "ACTIVE",
+            )
+        ),
+        UserMatchData(
+            similarity: 96.406089782715,
+            user: MatchedUserData(
+                userId: "test_user_id_1",
+                userStatus: "ACTIVE",
+            )
+        ),
+        ...
+    ]),
+    searchedFace: SearchedFaceData(
+        faceDetail: FaceDetailData(
+            confidence: 99.406089782715,
+            boundingBox: BoundingBoxData(
+                width: 0.4137507379055,
+                height: 0.74068546295166,
+                left: 0.0,
+                top: 0.25919502973557,
+            ),
+            ageRange: AgeRangeData(
+                low: 20,
+                high: 30,
+            ),
+            emotions: DataCollection([
+                EmotionData(
+                    type: "HAPPY",
+                    confidence: 99.406089782715,
+                ),
+                EmotionData(
+                    type: "SURPRISED",
+                    confidence: 98.74324798584,
+                ),
+                ...
+            ]),
+            eyeDirection: EyeDirectionData(
+                confidence: 99.406089782715,
+                yaw: 0.0,
+                pitch: 0.0,
+            ),
+            ...
+        )
+    ),
+    unsearchedFaces: DataCollection([
+        UnsearchedFaceData(
+            faceDetail: FaceDetailData(
+                confidence: 66.406089782715,
+                boundingBox: BoundingBoxData(
+                    width: 0.4737507379055,
+                    height: 0.72068546295166,
+                    left: 0.0,
+                    top: 0.28919502973557,
+                ),
+                ageRange: AgeRangeData(
+                    low: 25,
+                    high: 35,
+                ),
+                ...
+            ),
+            reasons: ["FACE_NOT_LARGEST"],
+        ),
+        ...
+    ]),
     metadata: MetadataData(
         statusCode: 200,
         effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",

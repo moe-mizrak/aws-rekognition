@@ -510,7 +510,6 @@ trait MockTrait
             ],
             'UnsearchedFaces' => [
                 [
-                    // todo maybe for the example, it is wong, maybe it is just faceDetail
                     'FaceDetails' => [
                         'BoundingBox' => [
                             'Height' => 0.068217702209949,
