@@ -817,9 +817,9 @@ To associate faces, you need to create an instance of [`AssociateFacesData`](src
 ```php
 // Create an AssociateFacesData object
 $associateFacesData = new AssociateFacesData(
-    collectionId: 'test_collection_id', // The id of an existing collection containing the userId - required
-    faceIds: ['8e2ad714-4d23-43c0-b9ad-9fab136bef13', 'ed49afb4-b45b-468e-9614-d652c924cd4a'], // An array of faceIds to associate with the userId - required
-    userId: 'test_user_id', // The userId to associate with the faceIds. (The id for the existing userId.) - required
+    collectionId      : 'test_collection_id', // The id of an existing collection containing the userId - required
+    faceIds           : ['8e2ad714-4d23-43c0-b9ad-9fab136bef13', 'ed49afb4-b45b-468e-9614-d652c924cd4a'], // An array of faceIds to associate with the userId - required
+    userId            : 'test_user_id', // The userId to associate with the faceIds. (The id for the existing userId.) - required
     userMatchThreshold: 80.0, // An optional value specifying the minimum confidence in the userId match to return - optional
     clientRequestToken: 'test_client_request_token', // Idempotent token used to identify the request to associate faces - optional
 );
