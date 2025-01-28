@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace MoeMizrak\Rekognition;
 
+use MoeMizrak\Rekognition\Data\AssociateFacesData;
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
 use MoeMizrak\Rekognition\Data\CreateUserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
 use MoeMizrak\Rekognition\Data\IndexFacesData;
 use MoeMizrak\Rekognition\Data\ListCollectionsData;
+use MoeMizrak\Rekognition\Data\ResultData\AssociateFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateCollectionResultData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateUserResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
@@ -123,5 +125,21 @@ final readonly class RekognitionRequest extends RekognitionAPI
 
         // Form the response before returning it.
         return $this->rekognitionHelper->formIndexFacesResponse($response->toArray());
+    }
+
+    /**
+     * Associates one or more faces with an existing userId in a collection.
+     *
+     * @param AssociateFacesData $associateFacesData
+     *
+     * @return AssociateFacesResultData
+     */
+    public function associateFaces(AssociateFacesData $associateFacesData): AssociateFacesResultData
+    {
+        // Send the request to AWS Rekognition API for associating faces.
+        $response = $this->client->associateFaces($associateFacesData->toRekognitionDataFormat());
+
+        // Form the response before returning it.
+        return $this->rekognitionHelper->formAssociateFacesResponse($response->toArray());
     }
 }

@@ -29,6 +29,7 @@ trait MockTrait
             'listCollections'  => $this->mockListCollectionsBody(),
             'createUser'       => $this->mockCreateUserBody(),
             'indexFaces'       => $this->mockIndexFacesBody(),
+            'associateFaces'   => $this->mockAssociateFacesBody(),
             default            => new Result([]),
         };
     }
@@ -444,6 +445,43 @@ trait MockTrait
                     ]
                 ],
             ],
+            "@metadata" => $this->mockMetadata(),
+        ];
+
+        return new Result($data);
+    }
+
+    /**
+     * Mock the associate faces response body. This is the response that would be returned from the AWS Rekognition API associateFaces call.
+     *
+     * @return Result
+     */
+    private function mockAssociateFacesBody(): Result
+    {
+        $data = [
+            "AssociatedFaces" => [
+                [
+                    "FaceId" => "8e2ad714-4d23-43c0-b9ad-9fab136bef13"
+                ],
+                [
+                    "FaceId" => "ed49afb4-b45b-468e-9614-d652c924cd4a"
+                ],
+            ],
+            "UnsuccessfulFaceAssociations" => [
+                [
+                    "Confidence" => 70.0,
+                    "FaceId" => "2e2ad714-4d23-43c0-b9ad-9fab136bef10",
+                    "Reason" => ["LOW_CONFIDENCE"],
+                    "UserId" => "test_user_id",
+                ],
+                [
+                    "Confidence" => 85.0,
+                    "FaceId" => "4e2ad714-4d23-43c0-b9ad-9fab136bef103",
+                    "Reason" => ["LOW_QUALITY"],
+                    "UserId" => "test_user_id",
+                ],
+            ],
+            "UserStatus" => "UPDATING",
             "@metadata" => $this->mockMetadata(),
         ];
 

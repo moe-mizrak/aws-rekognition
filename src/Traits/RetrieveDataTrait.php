@@ -5,6 +5,7 @@ namespace MoeMizrak\Rekognition\Traits;
 use Illuminate\Support\Arr;
 use MoeMizrak\Rekognition\Data\ResultData\AgeRangeData;
 use MoeMizrak\Rekognition\Data\ResultData\AliasData;
+use MoeMizrak\Rekognition\Data\ResultData\AssociatedFaceData;
 use MoeMizrak\Rekognition\Data\ResultData\BackgroundData;
 use MoeMizrak\Rekognition\Data\ResultData\BeardData;
 use MoeMizrak\Rekognition\Data\ResultData\BoundingBoxData;
@@ -33,6 +34,7 @@ use MoeMizrak\Rekognition\Data\ResultData\QualityData;
 use MoeMizrak\Rekognition\Data\ResultData\SmileData;
 use MoeMizrak\Rekognition\Data\ResultData\SunglassesData;
 use MoeMizrak\Rekognition\Data\ResultData\UnindexedFaceData;
+use MoeMizrak\Rekognition\Data\ResultData\UnsuccessfulFaceAssociationData;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -662,5 +664,54 @@ trait RetrieveDataTrait
         }
 
         return new DataCollection(LabelData::class, $labels);
+    }
+
+    /**
+     * Retrieves the associated faces of the response including face id.
+     *
+     * @param array $response
+     *
+     * @return DataCollection
+     */
+    protected function retrieveAssociatedFaces(array $response): DataCollection
+    {
+        $associatedFaces = [];
+        $returnedAssociatedFaces = Arr::get($response, 'AssociatedFaces', []);
+
+        foreach ($returnedAssociatedFaces as $returnedAssociatedFace) {
+            $associatedFace = new AssociatedFaceData(
+                faceId: Arr::get($returnedAssociatedFace, 'FaceId'),
+            );
+
+            $associatedFaces[] = $associatedFace;
+        }
+
+        return new DataCollection(AssociatedFaceData::class, $associatedFaces);
+    }
+
+    /**
+     * Retrieves the unsuccessful face associations of the response including confidence, face id, reasons, and user id.
+     *
+     * @param array $response
+     *
+     * @return DataCollection
+     */
+    protected function retrieveUnsuccessfulFaceAssociations(array $response): DataCollection
+    {
+        $unsuccessfulFaceAssociations = [];
+        $returnedUnsuccessfulFaceAssociations = Arr::get($response, 'UnsuccessfulFaceAssociations', []);
+
+        foreach ($returnedUnsuccessfulFaceAssociations as $returnedUnsuccessfulFaceAssociation) {
+            $unsuccessfulFaceAssociation = new UnsuccessfulFaceAssociationData(
+                confidence: Arr::get($returnedUnsuccessfulFaceAssociation, 'Confidence'),
+                faceId    : Arr::get($returnedUnsuccessfulFaceAssociation, 'FaceId'),
+                reasons   : Arr::get($returnedUnsuccessfulFaceAssociation, 'Reasons'),
+                userId    : Arr::get($returnedUnsuccessfulFaceAssociation, 'UserId'),
+            );
+
+            $unsuccessfulFaceAssociations[] = $unsuccessfulFaceAssociation;
+        }
+
+        return new DataCollection(UnsuccessfulFaceAssociationData::class, $unsuccessfulFaceAssociations);
     }
 }

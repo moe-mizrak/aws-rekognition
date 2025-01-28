@@ -2,6 +2,7 @@
 
 namespace MoeMizrak\Rekognition\Tests;
 
+use MoeMizrak\Rekognition\Data\AssociateFacesData;
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
 use MoeMizrak\Rekognition\Data\CreateUserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
@@ -193,5 +194,31 @@ class RekognitionRequestTest extends TestCase
         $this->assertInstanceOf(DataCollection::class, $response->faceRecords);
         $this->assertNotNull($response->unindexedFaces);
         $this->assertInstanceOf(DataCollection::class, $response->unindexedFaces);
+    }
+
+    #[Test]
+    public function it_tests_associate_faces_request()
+    {
+        /* SETUP */
+        $methodName = 'associateFaces';
+        $this->mockRekognitionClient($methodName);
+        $associateFacesData = new AssociateFacesData(
+            collectionId: 'test_collection_id',
+            faceIds: ['8e2ad714-4d23-43c0-b9ad-9fab136bef13', 'ed49afb4-b45b-468e-9614-d652c924cd4a'],
+            userId: 'test_user_id',
+            userMatchThreshold: 80.0, // default is 75.0
+            clientRequestToken: 'test_client_request_token',
+        );
+
+        /* EXECUTE */
+        $response = Rekognition::associateFaces($associateFacesData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertNotNull($response->associatedFaces);
+        $this->assertInstanceOf(DataCollection::class, $response->associatedFaces);
+        $this->assertNotNull($response->unsuccessfulFaceAssociations);
+        $this->assertInstanceOf(DataCollection::class, $response->unsuccessfulFaceAssociations);
+        $this->assertEquals("UPDATING", $response->userStatus);
     }
 }
