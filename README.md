@@ -10,6 +10,8 @@ Laravel package for AWS Rekognition API (PHP 8)
 
 ---
 
+_Amazon Rekognition is a cloud-based image and video analysis service that makes it easy to add advanced computer vision capabilities to your applications. The service is powered by proven deep learning technology and it requires no machine learning expertise to use. Amazon Rekognition includes a simple, easy-to-use API that can quickly analyze any image or video file that’s stored in Amazon S3._
+
 ## Table of Contents
 
 - [🤖 Requirements](#-requirements)
