@@ -4,14 +4,13 @@ namespace MoeMizrak\Rekognition\Tests;
 
 use MoeMizrak\Rekognition\Data\AssociateFacesData;
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
-use MoeMizrak\Rekognition\Data\CreateUserData;
+use MoeMizrak\Rekognition\Data\UserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
 use MoeMizrak\Rekognition\Data\ImageData;
 use MoeMizrak\Rekognition\Data\IndexFacesData;
 use MoeMizrak\Rekognition\Data\ListCollectionsData;
 use MoeMizrak\Rekognition\Data\ResultData\SearchedFaceData;
-use MoeMizrak\Rekognition\Data\ResultData\SearchUsersByImageResultData;
 use MoeMizrak\Rekognition\Data\S3ObjectData;
 use MoeMizrak\Rekognition\Data\SearchUsersByImageData;
 use MoeMizrak\Rekognition\Facades\Rekognition;
@@ -154,7 +153,7 @@ class RekognitionRequestTest extends TestCase
         $methodName = 'createUser';
         $collectionId = 'test_collection_id';
         $userId = 'test_user_id';
-        $createUserData = new CreateUserData(
+        $createUserData = new UserData(
             collectionId: $collectionId,
             userId: $userId,
         );
@@ -162,6 +161,26 @@ class RekognitionRequestTest extends TestCase
 
         /* EXECUTE */
         $response = Rekognition::createUser($createUserData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+    }
+
+    #[Test]
+    public function it_tests_delete_user_request()
+    {
+        /* SETUP */
+        $methodName = 'deleteUser';
+        $collectionId = 'test_collection_id';
+        $userId = 'test_user_id';
+        $deleteUserData = new UserData(
+            collectionId: $collectionId,
+            userId: $userId,
+        );
+        $this->mockRekognitionClient($methodName);
+
+        /* EXECUTE */
+        $response = Rekognition::deleteUser($deleteUserData);
 
         /* ASSERT */
         $this->metaDataAssertions($response);
