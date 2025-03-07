@@ -6,14 +6,14 @@ namespace MoeMizrak\Rekognition;
 
 use MoeMizrak\Rekognition\Data\AssociateFacesData;
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
-use MoeMizrak\Rekognition\Data\CreateUserData;
+use MoeMizrak\Rekognition\Data\UserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
 use MoeMizrak\Rekognition\Data\IndexFacesData;
 use MoeMizrak\Rekognition\Data\ListCollectionsData;
 use MoeMizrak\Rekognition\Data\ResultData\AssociateFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateCollectionResultData;
-use MoeMizrak\Rekognition\Data\ResultData\CreateUserResultData;
+use MoeMizrak\Rekognition\Data\ResultData\UserResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
 use MoeMizrak\Rekognition\Data\ResultData\IndexFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\ListCollectionsResultData;
@@ -97,19 +97,35 @@ final readonly class RekognitionRequest extends RekognitionAPI
 
     /**
      * Creates a new User within a collection specified by collectionId.
-     * Note! CreateUserData takes userId as a parameter, which is a user provided id which should be unique within the collection.
+     * Note! UserData takes userId as a parameter, which is a user provided id which should be unique within the collection.
      *
-     * @param CreateUserData $createUserData
+     * @param UserData $createUserData
      *
-     * @return CreateUserResultData
+     * @return UserResultData
      */
-    public function createUser(CreateUserData $createUserData): CreateUserResultData
+    public function createUser(UserData $createUserData): UserResultData
     {
         // Send the request to AWS Rekognition API for creating a user.
         $response = $this->client->createUser($createUserData->toRekognitionDataFormat());
 
         // Form the response before returning it.
-        return $this->rekognitionHelper->formCreateUserResponse($response->toArray());
+        return $this->rekognitionHelper->formUserResponse($response->toArray());
+    }
+
+    /**
+     * Deletes a user specified by userId from a collection specified by collectionId.
+     *
+     * @param UserData $deleteUserData
+     *
+     * @return UserResultData
+     */
+    public function deleteUser(UserData $deleteUserData): UserResultData
+    {
+        // Send the request to AWS Rekognition API for deleting a user.
+        $response = $this->client->deleteUser($deleteUserData->toRekognitionDataFormat());
+
+        // Form the response before returning it.
+        return $this->rekognitionHelper->formUserResponse($response->toArray());
     }
 
 

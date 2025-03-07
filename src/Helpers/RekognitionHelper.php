@@ -7,7 +7,7 @@ namespace MoeMizrak\Rekognition\Helpers;
 use Illuminate\Support\Arr;
 use MoeMizrak\Rekognition\Data\ResultData\AssociateFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateCollectionResultData;
-use MoeMizrak\Rekognition\Data\ResultData\CreateUserResultData;
+use MoeMizrak\Rekognition\Data\ResultData\UserResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
 use MoeMizrak\Rekognition\Data\ResultData\IndexFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\ListCollectionsResultData;
@@ -92,16 +92,16 @@ final readonly class RekognitionHelper
     }
 
     /**
-     * Forms the Rekognition create user response to CreateUserResultData including metadata.
+     * Forms the Rekognition create user response to UserResultData including metadata.
      * Note: The results for this operation are always empty, only metadata is returned.
      *
      * @param array $response
      *
-     * @return CreateUserResultData
+     * @return UserResultData
      */
-    public function formCreateUserResponse(array $response): CreateUserResultData
+    public function formUserResponse(array $response): UserResultData
     {
-        return new CreateUserResultData(
+        return new UserResultData(
             metadata: $this->retrieveMetaData($response),
         );
     }

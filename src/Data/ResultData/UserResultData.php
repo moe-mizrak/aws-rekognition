@@ -7,12 +7,13 @@ namespace MoeMizrak\Rekognition\Data\ResultData;
 use Spatie\LaravelData\Data;
 
 /**
- * CreateUserResultData is for the result of the Rekognition API createUser request.
+ * UserResultData is for the result of the Rekognition API createUser request.
  * For more info: https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html#createuser
+ * https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html#deleteuser
  *
- * @class CreateUserResultData
+ * @class UserResultData
  */
-final class CreateUserResultData extends Data
+final class UserResultData extends Data
 {
     public function __construct(
         /*

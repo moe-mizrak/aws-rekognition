@@ -23,7 +23,9 @@ _Amazon Rekognition is a cloud-based image and video analysis service that makes
     - [Create Collection](#create-collection)
     - [Delete Collection](#delete-collection)
     - [List Collections](#list-collections)
-  - [Create User](#create-user)
+  - [User](#user)
+    - [Create User](#create-user)
+    - [Delete User](#delete-user)
   - [Index Faces](#index-faces)
   - [Associate Faces](#associate-faces)
   - [Search Users By Image](#search-users-by-image)
@@ -104,7 +106,9 @@ Following **Rekognition API** operations are supported:
   - [Create Collection](#create-collection)
   - [Delete Collection](#delete-collection)
   - [List Collections](#list-collections)
-- [Create User](#create-user)
+- [User](#user)
+  - [Create User](#create-user)
+  - [Delete User](#delete-user)
 - [Index Faces](#index-faces)
 - [Associate Faces](#associate-faces)
 - [Search Users By Image](#search-users-by-image)
@@ -542,13 +546,16 @@ ListCollectionsResultData(
 </details>
 
 ---
-### Create User
+### User
+AWS Rekognition **user** is entity that represents a **face** in a **collection**.
+
+#### Create User
 Creates a **new user** within a **collection** specified by **collectionId** and **unique userId**.
 
-To create a user, you need to create an instance of [`CreateUserData`](src/Data/CreateUserData.php) object:
+To create a user, you need to create an instance of [`UserData`](src/Data/UserData.php) object:
 ```php
-// Create a CreateUserData object
-$createUserData = new CreateUserData(
+// Create a UserData object
+$createUserData = new UserData(
     collectionId      : 'your_collection_id', // The ID of an existing collection - required
     userId            : 'your_user_id', // ID for the user id to be created. This user id needs to be unique within the collection. - required
     /*
@@ -568,16 +575,71 @@ Then, you can send the request using the `Rekognition` facade `createUser` metho
 $response = Rekognition::createUser($createUserData);
 ```
 
-Response will be an instance of [`CreateUserResultData`](src/Data/ResultData/CreateUserResultData.php) object.
+Response will be an instance of [`UserResultData`](src/Data/ResultData/UserResultData.php) object.
 
 > [!NOTE]
-> The result for the `createUser` request is always empty, only metadata is returned in `CreateUserResultData`.
+> The result for the `createUser` request is always empty, only metadata is returned in `UserResultData`.
 
 <details>
-<summary>This is the sample CreateUserResultData:</summary>
+<summary>This is the sample UserResultData:</summary>
 
 ```php
-CreateUserResultData(
+UserResultData(
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+#### Delete User
+Deletes a **user** from a **collection** specified by **collectionId** and **userId**.
+
+> [!NOTE]
+> Faces that are associated with the **userId** are disassociated from the **userId** before deleting the specified **userId**.
+
+To delete a user, you need to create an instance of [`UserData`](src/Data/UserData.php) object:
+```php
+// Delete a user from a collection
+$deleteUserData = new UserData(
+    collectionId      : 'your_collection_id', // The ID of an existing collection - required
+    userId            : 'your_user_id', // ID for the user id to be deleted - required
+    /*
+     * Optional - Idempotent token used to identify the request to deleteUser. 
+     * If you use the same token with multiple deleteUser requests, the same response is returned.
+     * Use clientRequestToken to prevent the same request from being processed more than once.
+     */
+    clientRequestToken: 'your_client_request_token',
+);
+```
+
+Then, you can send the request using the `Rekognition` facade `deleteUser` method:
+```php
+$response = Rekognition::deleteUser($deleteUserData);
+```
+
+Response will be an instance of [`UserResultData`](src/Data/ResultData/UserResultData.php) object.
+
+> [!NOTE]
+> The result for the `deleteUser` request is always empty, only metadata is returned in `UserResultData`.
+
+<details>
+<summary>This is the sample UserResultData:</summary>
+
+```php
+UserResultData(
     metadata: MetadataData(
         statusCode: 200,
         effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",

@@ -27,7 +27,7 @@ trait MockTrait
             'createCollection'   => $this->mockCreateCollectionBody(),
             'deleteCollection'   => $this->mockDeleteCollectionBody(),
             'listCollections'    => $this->mockListCollectionsBody(),
-            'createUser'         => $this->mockCreateUserBody(),
+            'createUser', 'deleteUser' => $this->mockUserBody(),
             'indexFaces'         => $this->mockIndexFacesBody(),
             'associateFaces'     => $this->mockAssociateFacesBody(),
             'searchUsersByImage' => $this->mockSearchUsersByImageBody(),
@@ -36,12 +36,12 @@ trait MockTrait
     }
 
     /**
-     * Mock the create user response body. This is the response that would be returned from the AWS Rekognition API createUser call.
+     * Mock the create/delete user response body. This is the response that would be returned from the AWS Rekognition API createUser/deleteUser call.
      * The results for this operation are always empty, it only returns metadata.
      *
      * @return Result
      */
-    private function mockCreateUserBody(): Result
+    private function mockUserBody(): Result
     {
         $data = [
             "@metadata" => $this->mockMetadata(),
