@@ -694,6 +694,30 @@ trait RetrieveDataTrait
     }
 
     /**
+     * Retrieves the users of the response including user id and user status.
+     *
+     * @param array $response
+     *
+     * @return DataCollection
+     */
+    protected function retrieveUsers(array $response): DataCollection
+    {
+        $users = [];
+        $returnedUsers = Arr::get($response, 'Users', []);
+
+        foreach ($returnedUsers as $returnedUser) {
+            $user = new MatchedUserData(
+                userId    : Arr::get($returnedUser, 'UserId'),
+                userStatus: Arr::get($returnedUser, 'UserStatus'),
+            );
+
+            $users[] = $user;
+        }
+
+        return new DataCollection(MatchedUserData::class, $users);
+    }
+
+    /**
      * Retrieves the unsuccessful face associations of the response including confidence, face id, reasons, and user id.
      *
      * @param array $response
