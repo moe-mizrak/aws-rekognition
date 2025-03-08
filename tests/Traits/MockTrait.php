@@ -31,6 +31,8 @@ trait MockTrait
             'listUsers'          => $this->mockListUsersBody(),
             'indexFaces'         => $this->mockIndexFacesBody(),
             'associateFaces'     => $this->mockAssociateFacesBody(),
+            'listFaces'          => $this->mockListFacesBody(),
+            'deleteFaces'        => $this->mockDeleteFacesBody(),
             'searchUsersByImage' => $this->mockSearchUsersByImageBody(),
             default              => new Result([]),
         };
@@ -508,6 +510,76 @@ trait MockTrait
                 ],
             ],
             "UserStatus" => "UPDATING",
+            "@metadata" => $this->mockMetadata(),
+        ];
+
+        return new Result($data);
+    }
+
+    /**
+     * Mock the list faces response body. This is the response that would be returned from the AWS Rekognition API listFaces call.
+     *
+     * @return Result
+     */
+    private function mockListFacesBody(): Result
+    {
+        $data = [
+            "FaceModelVersion" => "7.0",
+            "Faces" => [
+                [
+                    "FaceId" => "038388f6-221a-4f3f-aab5-1ccd8256f7e8",
+                    "BoundingBox" => [
+                        "Width" => 0.076543763279915,
+                        "Height" => 0.15887394547462,
+                        "Left" => 0.18118159472942,
+                        "Top" => 0.32549938559532,
+                    ],
+                    "ImageId" => "8d0575de-6fc3-3762-8644-3b393cef2741",
+                    "ExternalImageId" => "test_external_image_id",
+                    "Confidence" => 99.99772644043,
+                    "UserId" => "test_user_id",
+                ],
+                [
+                    "FaceId" => "938388f6-221a-4f3f-aab5-1ccd8256f7e3",
+                    "BoundingBox" => [
+                        "Width" => 0.176543763279915,
+                        "Height" => 0.12887394547462,
+                        "Left" => 0.13118159472942,
+                        "Top" => 0.32349938559532,
+                    ],
+                    "ImageId" => "3d0575de-6fc3-3762-8644-3b393cef2749",
+                    "ExternalImageId" => "test_external_image_id",
+                    "Confidence" => 99.69772644043,
+                    "UserId" => "test_user_id",
+                ],
+            ],
+            "@metadata" => $this->mockMetadata(),
+        ];
+
+        return new Result($data);
+    }
+
+    /**
+     * Mock the delete faces response body. This is the response that would be returned from the AWS Rekognition API deleteFaces call.
+     *
+     * @return Result
+     */
+    private function mockDeleteFacesBody(): Result
+    {
+        $data = [
+            "DeletedFaces" => ["ed49afb4-b45b-468e-9614-d652c924cd4a", "8e2ad714-4d23-43c0-b9ad-9fab136bef13"],
+            "UnsuccessfulFaceDeletions" => [
+                [
+                    "FaceId" => "2e2ad714-4d23-43c0-b9ad-9fab136bef10",
+                    "Reason" => ["LOW_CONFIDENCE"],
+                    "UserId" => "test_user_id_1",
+                ],
+                [
+                    "FaceId" => "4e2ad714-4d23-43c0-b9ad-9fab136bef103",
+                    "Reason" => ["LOW_QUALITY"],
+                    "UserId" => "test_user_id_0",
+                ],
+            ],
             "@metadata" => $this->mockMetadata(),
         ];
 

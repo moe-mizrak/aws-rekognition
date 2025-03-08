@@ -26,7 +26,7 @@ final class ListCollectionsResultData extends Data
          * Version numbers of the face detection models associated with the collections in the array CollectionIds.
          * For example, the value of FaceModelVersions[2] is the version number for the face detection model used by the collection in CollectionId[2].
          *
-         * @param string|null
+         * @param array|null
          */
         public ?array $faceModelVersions = null,
 

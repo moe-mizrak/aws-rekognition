@@ -38,6 +38,7 @@ use MoeMizrak\Rekognition\Data\ResultData\SunglassesData;
 use MoeMizrak\Rekognition\Data\ResultData\UnindexedFaceData;
 use MoeMizrak\Rekognition\Data\ResultData\UnsearchedFaceData;
 use MoeMizrak\Rekognition\Data\ResultData\UnsuccessfulFaceAssociationData;
+use MoeMizrak\Rekognition\Data\ResultData\UnsuccessfulFaceDeletionsData;
 use MoeMizrak\Rekognition\Data\ResultData\UserMatchData;
 use Spatie\LaravelData\DataCollection;
 
@@ -154,6 +155,35 @@ trait RetrieveDataTrait
             externalImageId       : Arr::get($returnedFace, 'ExternalImageId'),
             indexFacesModelVersion: Arr::get($returnedFace, 'IndexFacesModelVersion'),
         );
+    }
+
+    /**
+     * Retrieves the faces from the response including confidence, bounding box, face id, image id, user id, external image id, and index faces model version.
+     *
+     * @param array $response
+     *
+     * @return DataCollection
+     */
+    protected function retrieveFaces(array $response): DataCollection
+    {
+        $faces = [];
+        $returnedFaces = Arr::get($response, 'Faces', []);
+
+        foreach ($returnedFaces as $returnedFace) {
+            $face = new FaceData(
+                confidence            : Arr::get($returnedFace, 'Confidence'),
+                boundingBox           : $this->retrieveBoundingBoxData($returnedFace),
+                faceId                : Arr::get($returnedFace, 'FaceId'),
+                imageId               : Arr::get($returnedFace, 'ImageId'),
+                userId                : Arr::get($returnedFace, 'UserId'),
+                externalImageId       : Arr::get($returnedFace, 'ExternalImageId'),
+                indexFacesModelVersion: Arr::get($returnedFace, 'IndexFacesModelVersion'),
+            );
+
+            $faces[] = $face;
+        }
+
+        return new DataCollection(FaceData::class, $faces);
     }
 
     /**
@@ -741,6 +771,31 @@ trait RetrieveDataTrait
         }
 
         return new DataCollection(UnsuccessfulFaceAssociationData::class, $unsuccessfulFaceAssociations);
+    }
+
+    /**
+     * Retrieves the unsuccessful face deletions of the response including face id, reasons, and user id.
+     *
+     * @param array $response
+     *
+     * @return DataCollection
+     */
+    public function retrieveUnsuccessfulFaceDeletions(array $response): DataCollection
+    {
+        $unsuccessfulFaceDeletions = [];
+        $returnedUnsuccessfulFaceDeletions = Arr::get($response, 'UnsuccessfulFaceDeletions', []);
+
+        foreach ($returnedUnsuccessfulFaceDeletions as $returnedUnsuccessfulFaceDeletion) {
+            $unsuccessfulFaceDeletion = new UnsuccessfulFaceDeletionsData(
+                faceId : Arr::get($returnedUnsuccessfulFaceDeletion, 'FaceId'),
+                reasons: Arr::get($returnedUnsuccessfulFaceDeletion, 'Reasons'),
+                userId : Arr::get($returnedUnsuccessfulFaceDeletion, 'UserId'),
+            );
+
+            $unsuccessfulFaceDeletions[] = $unsuccessfulFaceDeletion;
+        }
+
+        return new DataCollection(UnsuccessfulFaceDeletionsData::class, $unsuccessfulFaceDeletions);
     }
 
     /**

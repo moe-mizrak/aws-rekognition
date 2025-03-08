@@ -6,7 +6,11 @@ namespace MoeMizrak\Rekognition;
 
 use MoeMizrak\Rekognition\Data\AssociateFacesData;
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
+use MoeMizrak\Rekognition\Data\DeleteFacesData;
+use MoeMizrak\Rekognition\Data\ListFacesData;
 use MoeMizrak\Rekognition\Data\ListUsersData;
+use MoeMizrak\Rekognition\Data\ResultData\DeleteFacesResultData;
+use MoeMizrak\Rekognition\Data\ResultData\ListFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\ListUsersResultData;
 use MoeMizrak\Rekognition\Data\UserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
@@ -176,6 +180,39 @@ final readonly class RekognitionRequest extends RekognitionAPI
 
         // Form the response before returning it.
         return $this->rekognitionHelper->formAssociateFacesResponse($response->toArray());
+    }
+
+    /**
+     * Returns faces in the specified collection.
+     * It can be filtered by userId, and faceIds.
+     *
+     * @param ListFacesData $listFacesData
+     *
+     * @return ListFacesResultData
+     */
+    public function listFaces(ListFacesData $listFacesData): ListFacesResultData
+    {
+        // Send the request to AWS Rekognition API for listing faces (can be filtered by userId, and faceIds).
+        $response = $this->client->listFaces($listFacesData->toRekognitionDataFormat());
+
+        // Form the response before returning it.
+        return $this->rekognitionHelper->formListFacesResponse($response->toArray());
+    }
+
+    /**
+     * Deletes faces from a collection. You specify a collection id and an array of face ids to remove from the collection.
+     *
+     * @param DeleteFacesData $deleteFacesData
+     *
+     * @return DeleteFacesResultData
+     */
+    public function deleteFaces(DeleteFacesData $deleteFacesData): DeleteFacesResultData
+    {
+        // Send the request to AWS Rekognition API for deleting faces.
+        $response = $this->client->deleteFaces($deleteFacesData->toRekognitionDataFormat());
+
+        // Form the response before returning it.
+        return $this->rekognitionHelper->formDeleteFacesResponse($response->toArray());
     }
 
     /**

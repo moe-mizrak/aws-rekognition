@@ -27,8 +27,11 @@ _Amazon Rekognition is a cloud-based image and video analysis service that makes
     - [Create User](#create-user)
     - [Delete User](#delete-user)
     - [List Users](#list-users)
-  - [Index Faces](#index-faces)
-  - [Associate Faces](#associate-faces)
+  - [Face](#face)
+    - [Index Faces](#index-faces)
+    - [Associate Faces](#associate-faces)
+    - [List Faces](#list-faces)
+    - [Delete Faces](#delete-faces)
   - [Search Users By Image](#search-users-by-image)
 - [💫 Contributing](#-contributing)
 - [📜 License](#-license)
@@ -111,8 +114,11 @@ Following **Rekognition API** operations are supported:
   - [Create User](#create-user)
   - [Delete User](#delete-user)
   - [List Users](#list-users)
-- [Index Faces](#index-faces)
-- [Associate Faces](#associate-faces)
+- [Face](#face)
+  - [Index Faces](#index-faces)
+  - [Associate Faces](#associate-faces)
+  - [List Faces](#list-faces)
+  - [Delete Faces](#delete-faces)
 - [Search Users By Image](#search-users-by-image)
 
 > [!TIP]
@@ -717,7 +723,10 @@ ListUsersResultData(
 </details>
 
 ---
-### Index Faces
+### Face
+AWS Rekognition **face** is an entity that represents a **detected and indexed face** in a **collection**.
+
+#### Index Faces
 **Detects faces** in the **input image** and **adds** them to the **specified collection**.
 
 First of all, you need to create an instance of [`ImageData`](src/Data/ImageData.php) object by providing the **image bytes** of an image file.
@@ -932,8 +941,7 @@ IndexFacesResultData(
 ```
 </details>
 
----
-### Associate Faces
+#### Associate Faces
 **Associates** one or more **faces** with an existing **userId**.
 
 To associate faces, you need to create an instance of [`AssociateFacesData`](src/Data/AssociateFacesData.php) object:
@@ -989,6 +997,139 @@ AssociateFacesResultData(
         ),
     ]),
     userStatus: "UPDATING",
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+#### List Faces
+Lists the **faces** in a **collection** specified by **collectionId**.
+
+To list faces, you need to create an instance of [`ListFacesData`](src/Data/ListFacesData.php) object:
+```php
+// Create a ListFacesData object
+$listFacesData = new ListFacesData(
+    collectionId: 'your_collection_id', // The ID of an existing collection - required
+    userId      : 'your_user_id', // The ID of an existing user - optional
+    faceIds     : ['your_face_id_0', 'your_face_id_1'], // An array of face IDs to return information about - optional
+    maxResults  : 10, // Maximum number of face IDs to return - optional
+    nextToken   : 'your_next_token', // Pagination token from the previous response - optional
+);
+```
+
+Then, you can send the request using the `Rekognition` facade `listFaces` method:
+```php
+$response = Rekognition::listFaces($listFacesData);
+```
+
+Response will be an instance of [`ListFacesResultData`](src/Data/ResultData/ListFacesResultData.php) object.
+
+<details>
+<summary>This is the sample ListFacesResultData:</summary>
+
+```php
+ListFacesResultData(
+    faces: DataCollection([
+        FaceData(
+            confidence: 99.406089782715,
+            boundingBox: BoundingBoxData(
+                width: 0.4137507379055,
+                height: 0.74068546295166,
+                left: 0.0,
+                top: 0.25919502973557,
+            ),
+            faceId: "your_face_id_0",
+            imageId: "your_image_id",
+            userId: "your_user_id",
+            externalImageId: "your_external_image_id",
+        ),
+        FaceData(
+            confidence: 98.406089782715,
+            boundingBox: BoundingBoxData(
+                width: 0.4137507379055,
+                height: 0.74068546295166,
+                left: 0.0,
+                top: 0.25919502973557,
+            ),
+            faceId: "your_face_id_1",
+            imageId: "your_image_id",
+            userId: "your_user_id",
+            externalImageId: "your_external_image_id",
+        ),
+        ...
+    ]),
+    faceModelVersion: "7.0",
+    nextToken: "your_next_token",
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+#### Delete Faces
+Deletes faces from a **collection** specified by **collectionId** and **faceIds**.
+
+To delete faces, you need to create an instance of [`DeleteFacesData`](src/Data/DeleteFacesData.php) object:
+```php
+// Create a DeleteFacesData object
+$deleteFacesData = new DeleteFacesData(
+    collectionId: 'your_collection_id', // The ID of an existing collection - required
+    faceIds     : ['your_face_id_0', 'your_face_id_1', 'your_face_id_2', 'your_face_id_3'], // An array of face IDs to delete - required
+);
+```
+
+Then, you can send the request using the `Rekognition` facade `deleteFaces` method:
+```php
+$response = Rekognition::deleteFaces($deleteFacesData);
+```
+
+Response will be an instance of [`DeleteFacesResultData`](src/Data/ResultData/DeleteFacesResultData.php) object.
+
+<details>
+<summary>This is the sample DeleteFacesResultData:</summary>
+
+```php
+DeleteFacesResultData(
+    deletedFaces: ['your_face_id_0', 'your_face_id_1'],
+    unsuccessfulFaceDeletions: DataCollection([
+        UnsuccessfulFaceDeletionData(
+            faceId: "your_face_id_2",
+            reasons: ["LOW_CONFIDENCE"],
+            userId: "your_user_id",
+        ),
+        UnsuccessfulFaceDeletionData(
+            faceId: "your_face_id_3",
+            reasons: ["LOW_QUALITY"],
+            userId: "your_user_id",
+        ),
+    ]),
     metadata: MetadataData(
         statusCode: 200,
         effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
