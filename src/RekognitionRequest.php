@@ -6,6 +6,8 @@ namespace MoeMizrak\Rekognition;
 
 use MoeMizrak\Rekognition\Data\AssociateFacesData;
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
+use MoeMizrak\Rekognition\Data\ListUsersData;
+use MoeMizrak\Rekognition\Data\ResultData\ListUsersResultData;
 use MoeMizrak\Rekognition\Data\UserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
@@ -128,6 +130,21 @@ final readonly class RekognitionRequest extends RekognitionAPI
         return $this->rekognitionHelper->formUserResponse($response->toArray());
     }
 
+    /**
+     * Lists the users in a collection specified by collectionId.
+     *
+     * @param ListUsersData $listUsersData
+     *
+     * @return ListUsersResultData
+     */
+    public function listUsers(ListUsersData $listUsersData): ListUsersResultData
+    {
+        // Send the request to AWS Rekognition API for listing users.
+        $response = $this->client->listUsers($listUsersData->toRekognitionDataFormat());
+
+        // Form the response before returning it.
+        return $this->rekognitionHelper->formListUsersResponse($response->toArray());
+    }
 
     /**
      * Detects faces in the input image and adds them to the specified collection.

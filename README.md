@@ -26,6 +26,7 @@ _Amazon Rekognition is a cloud-based image and video analysis service that makes
   - [User](#user)
     - [Create User](#create-user)
     - [Delete User](#delete-user)
+    - [List Users](#list-users)
   - [Index Faces](#index-faces)
   - [Associate Faces](#associate-faces)
   - [Search Users By Image](#search-users-by-image)
@@ -109,6 +110,7 @@ Following **Rekognition API** operations are supported:
 - [User](#user)
   - [Create User](#create-user)
   - [Delete User](#delete-user)
+  - [List Users](#list-users)
 - [Index Faces](#index-faces)
 - [Associate Faces](#associate-faces)
 - [Search Users By Image](#search-users-by-image)
@@ -640,6 +642,61 @@ Response will be an instance of [`UserResultData`](src/Data/ResultData/UserResul
 
 ```php
 UserResultData(
+    metadata: MetadataData(
+        statusCode: 200,
+        effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",
+        headers: [
+            "x-amzn-requestid" => "8dc27697-dc77-4d24-9f68-1f5080b536c9",
+            "content-type" => "application/x-amz-json-1.1",
+            "content-length" => "2658",
+            "date" => "Fri, 17 Jan 2025 18:05:24 GMT",
+        ],
+        transferStats: [
+            "http" => [
+                [],
+            ],
+        ],
+    ),
+);
+```
+</details>
+
+#### List Users
+Lists the **users** in a **collection** specified by **collectionId**.
+
+To list users, you need to create an instance of [`ListUsersData`](src/Data/ListUsersData.php) object:
+```php
+// Create a ListUsersData object
+$listUsersData = new ListUsersData(
+    collectionId: 'your_collection_id', // The ID of an existing collection - required
+    maxResults  : 10, // Maximum number of user IDs to return - optional
+    nextToken   : 'your_next_token', // Pagination token from the previous response - optional
+);
+```
+
+Then, you can send the request using the `Rekognition` facade `listUsers` method:
+```php
+$response = Rekognition::listUsers($listUsersData);
+```
+
+Response will be an instance of [`ListUsersResultData`](src/Data/ResultData/ListUsersResultData.php) object.
+
+<details>
+<summary>This is the sample ListUsersResultData:</summary>
+
+```php
+ListUsersResultData(
+    users: DataCollection([
+        MatchedUserData(
+            userId: "first_user_id",
+            userStatus: "UPDATING",
+        ),
+        MatchedUserData(
+            userId: "second_user_id",
+            userStatus: "CREATED",
+        )
+    ]),
+    nextToken: "your_next_token",
     metadata: MetadataData(
         statusCode: 200,
         effectiveUri: "https://rekognition.us-east-1.amazonaws.com/",

@@ -4,6 +4,7 @@ namespace MoeMizrak\Rekognition\Tests;
 
 use MoeMizrak\Rekognition\Data\AssociateFacesData;
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
+use MoeMizrak\Rekognition\Data\ListUsersData;
 use MoeMizrak\Rekognition\Data\UserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
@@ -184,6 +185,26 @@ class RekognitionRequestTest extends TestCase
 
         /* ASSERT */
         $this->metaDataAssertions($response);
+    }
+
+    #[Test]
+    public function it_tests_list_users_request()
+    {
+        /* SETUP */
+        $methodName = 'listUsers';
+        $this->mockRekognitionClient($methodName);
+        $listUsersData = new ListUsersData(
+            collectionId: 'test_collection_id',
+            maxResults: 10,
+        );
+
+        /* EXECUTE */
+        $response = Rekognition::listUsers($listUsersData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertNotNull($response->users);
+        $this->assertInstanceOf(DataCollection::class, $response->users);
     }
 
     #[Test]

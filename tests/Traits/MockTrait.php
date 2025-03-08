@@ -28,6 +28,7 @@ trait MockTrait
             'deleteCollection'   => $this->mockDeleteCollectionBody(),
             'listCollections'    => $this->mockListCollectionsBody(),
             'createUser', 'deleteUser' => $this->mockUserBody(),
+            'listUsers'          => $this->mockListUsersBody(),
             'indexFaces'         => $this->mockIndexFacesBody(),
             'associateFaces'     => $this->mockAssociateFacesBody(),
             'searchUsersByImage' => $this->mockSearchUsersByImageBody(),
@@ -44,6 +45,30 @@ trait MockTrait
     private function mockUserBody(): Result
     {
         $data = [
+            "@metadata" => $this->mockMetadata(),
+        ];
+
+        return new Result($data);
+    }
+
+    /**
+     * Mock the list users response body. This is the response that would be returned from the AWS Rekognition API listUsers call.
+     *
+     * @return Result
+     */
+    private function mockListUsersBody(): Result
+    {
+        $data = [
+            'Users' => [
+                [
+                    'UserId' => 'test_user_id_0',
+                    'UserStatus' => 'ACTIVE',
+                ],
+                [
+                    'UserId' => 'test_user_id_1',
+                    'UserStatus' => 'UPDATING',
+                ],
+            ],
             "@metadata" => $this->mockMetadata(),
         ];
 

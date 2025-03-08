@@ -7,6 +7,8 @@ namespace MoeMizrak\Rekognition\Facades;
 use Illuminate\Support\Facades\Facade;
 use MoeMizrak\Rekognition\Data\AssociateFacesData;
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
+use MoeMizrak\Rekognition\Data\ListUsersData;
+use MoeMizrak\Rekognition\Data\ResultData\ListUsersResultData;
 use MoeMizrak\Rekognition\Data\UserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
@@ -31,6 +33,7 @@ use MoeMizrak\Rekognition\Data\SearchUsersByImageData;
  * @method static ListCollectionsResultData listCollections(ListCollectionsData $listCollectionsData) Lists the collections in an AWS account.
  * @method static UserResultData createUser(UserData $createUserData) Creates a new User within a collection specified by collectionId. Takes userId as a parameter, which is a user provided id which should be unique within the collection.
  * @method static UserResultData deleteUser(UserData $deleteUserData) Deletes a User within a collection. Faces that are associated with the userId are disassociated from the userId before deleting the specified userId.
+ * @method static ListUsersResultData listUsers(ListUsersData $listUsersData) Lists the users in a collection.
  * @method static IndexFacesResultData indexFaces(IndexFacesData $indexFacesData) Detects faces in the input image and adds them to the specified collection.
  * @method static AssociateFacesResultData associateFaces(AssociateFacesData $associateFacesData) Associates one or more faces with an existing userId in a collection.
  * @method static SearchUsersByImageResultData searchUsersByImage(SearchUsersByImageData $searchUsersByImageData) Searches for userIds using a supplied image. It first detects the largest face in the image, and then searches a specified collection for matching userIds.

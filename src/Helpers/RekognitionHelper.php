@@ -7,6 +7,7 @@ namespace MoeMizrak\Rekognition\Helpers;
 use Illuminate\Support\Arr;
 use MoeMizrak\Rekognition\Data\ResultData\AssociateFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateCollectionResultData;
+use MoeMizrak\Rekognition\Data\ResultData\ListUsersResultData;
 use MoeMizrak\Rekognition\Data\ResultData\UserResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
 use MoeMizrak\Rekognition\Data\ResultData\IndexFacesResultData;
@@ -38,6 +39,22 @@ final readonly class RekognitionHelper
             faceModelVersions: Arr::get($response, 'FaceModelVersions'),
             nextToken        : Arr::get($response, 'NextToken'),
             metadata         : $this->retrieveMetaData($response),
+        );
+    }
+
+    /**
+     * Forms the Rekognition listUsers response to ListUsersResultData including users, next token, and metadata.
+     *
+     * @param array $response
+     *
+     * @return ListUsersResultData
+     */
+    public function formListUsersResponse(array $response): ListUsersResultData
+    {
+        return new ListUsersResultData(
+            users    : $this->retrieveUsers($response),
+            nextToken: Arr::get($response, 'NextToken'),
+            metadata : $this->retrieveMetaData($response),
         );
     }
 
