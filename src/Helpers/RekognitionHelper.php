@@ -7,6 +7,8 @@ namespace MoeMizrak\Rekognition\Helpers;
 use Illuminate\Support\Arr;
 use MoeMizrak\Rekognition\Data\ResultData\AssociateFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\CreateCollectionResultData;
+use MoeMizrak\Rekognition\Data\ResultData\DeleteFacesResultData;
+use MoeMizrak\Rekognition\Data\ResultData\ListFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\ListUsersResultData;
 use MoeMizrak\Rekognition\Data\ResultData\UserResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DeleteCollectionResultData;
@@ -155,6 +157,39 @@ final readonly class RekognitionHelper
             unsuccessfulFaceAssociations: $this->retrieveUnsuccessfulFaceAssociations($response),
             userStatus                  : Arr::get($response, 'UserStatus'),
             metadata                    : $this->retrieveMetaData($response),
+        );
+    }
+
+    /**
+     * Forms the Rekognition listFaces response to ListFacesResultData including faces, face model version, next token, and metadata.
+     *
+     * @param array $response
+     *
+     * @return ListFacesResultData
+     */
+    public function formListFacesResponse(array $response): ListFacesResultData
+    {
+        return new ListFacesResultData(
+            faces           : $this->retrieveFaces($response),
+            faceModelVersion: Arr::get($response, 'FaceModelVersion'),
+            nextToken       : Arr::get($response, 'NextToken'),
+            metadata        : $this->retrieveMetaData($response),
+        );
+    }
+
+    /**
+     * Forms the Rekognition deleteFaces response to DeleteFacesResultData including deleted faces, unsuccessful face deletions, and metadata.
+     *
+     * @param array $response
+     *
+     * @return DeleteFacesResultData
+     */
+    public function formDeleteFacesResponse(array $response): DeleteFacesResultData
+    {
+        return new DeleteFacesResultData(
+            deletedFaces             : Arr::get($response, 'DeletedFaces'),
+            unsuccessfulFaceDeletions: $this->retrieveUnsuccessfulFaceDeletions($response),
+            metadata                 : $this->retrieveMetaData($response),
         );
     }
 

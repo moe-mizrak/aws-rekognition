@@ -4,6 +4,8 @@ namespace MoeMizrak\Rekognition\Tests;
 
 use MoeMizrak\Rekognition\Data\AssociateFacesData;
 use MoeMizrak\Rekognition\Data\CreateCollectionData;
+use MoeMizrak\Rekognition\Data\DeleteFacesData;
+use MoeMizrak\Rekognition\Data\ListFacesData;
 use MoeMizrak\Rekognition\Data\ListUsersData;
 use MoeMizrak\Rekognition\Data\UserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
@@ -263,6 +265,49 @@ class RekognitionRequestTest extends TestCase
         $this->assertNotNull($response->unsuccessfulFaceAssociations);
         $this->assertInstanceOf(DataCollection::class, $response->unsuccessfulFaceAssociations);
         $this->assertEquals("UPDATING", $response->userStatus);
+    }
+
+    #[Test]
+    public function it_tests_list_faces_request()
+    {
+        /* SETUP */
+        $methodName = 'listFaces';
+        $this->mockRekognitionClient($methodName);
+        $listFacesData = new ListFacesData(
+            collectionId: 'test_collection_id',
+            userId: 'test_user_id',
+            maxResults: 10,
+        );
+
+        /* EXECUTE */
+        $response = Rekognition::listFaces($listFacesData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertNotNull($response->faces);
+        $this->assertInstanceOf(DataCollection::class, $response->faces);
+        $this->assertNotNull($response->faceModelVersion);
+    }
+
+    #[Test]
+    public function it_tests_delete_faces_request()
+    {
+        /* SETUP */
+        $methodName = 'deleteFaces';
+        $this->mockRekognitionClient($methodName);
+        $deleteFacesData = new DeleteFacesData(
+            collectionId: 'test_collection_id',
+            faceIds: ['8e2ad714-4d23-43c0-b9ad-9fab136bef13', 'ed49afb4-b45b-468e-9614-d652c924cd4a'],
+        );
+
+        /* EXECUTE */
+        $response = Rekognition::deleteFaces($deleteFacesData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertNotNull($response->deletedFaces);
+        $this->assertNotNull($response->unsuccessfulFaceDeletions);
+        $this->assertInstanceOf(DataCollection::class, $response->unsuccessfulFaceDeletions);
     }
 
     #[Test]
