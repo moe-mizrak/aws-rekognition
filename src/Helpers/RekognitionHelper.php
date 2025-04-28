@@ -213,7 +213,7 @@ final readonly class RekognitionHelper
     }
 
     /**
-     * Forms the Rekognition search users by image response to SearchUsersByImageResultData including face model version, user matches, searched face, unsearched faces, and metadata.
+     * Forms the Rekognition search users by image response to formSearchFacesByImageResponse including face model version, face matches, searched face bounding box, searched face confidence, and metadata.
      *
      * @param array $response
      *
@@ -226,6 +226,7 @@ final readonly class RekognitionHelper
             faceMatches            : $this->retrieveFaceMatches($response),
             searchedFaceBoundingBox: $this->retrieveSearchedFaceBoundingBox($response),
             searchedFaceConfidence : Arr::get($response, 'SearchedFaceConfidence'),
+            metadata               : $this->retrieveMetaData($response),
         );
     }
 }
