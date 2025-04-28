@@ -47,5 +47,12 @@ final class SearchFacesByImageResultData extends Data
          * @param float|null
          */
         public ?float $searchedFaceConfidence = null,
+
+        /*
+         * Metadata about the request.
+         *
+         * @param MetaData|null
+         */
+        public ?MetaData $metadata = null,
     ) {}
 }
