@@ -829,25 +829,21 @@ trait RetrieveDataTrait
         return new DataCollection(UserMatchData::class, $userMatches);
     }
 
-    private function retrieveFaceMatches(array $response): DataCollection
+    /**
+     * Retrieves the face matches data of the response including similarity and face data.
+     *
+     * @param array $response
+     *
+     * @return DataCollection
+     */
+    protected function retrieveFaceMatches(array $response): DataCollection
     {
         $faceMatches = [];
         $returnedFaceMatches = Arr::get($response, 'FaceMatches', []);
 
         foreach ($returnedFaceMatches as $returnedFaceMatch) {
-            $returnedFaceData = Arr::get($returnedFaceMatch, 'Face');
-
-            $faceData = new FaceData(
-                faceId                  : Arr::get($returnedFaceData, 'FaceId'),
-                boundingBox             : $this->retrieveBoundingBoxData($returnedFaceData),
-                imageId                 : Arr::get($returnedFaceData, 'ImageId'),
-                externalImageId         : Arr::get($returnedFaceData, 'ExternalImageId'),
-                confidence              : Arr::get($returnedFaceData, 'Confidence'),
-                indexFacesModelVersion  : Arr::get($returnedFaceData, 'IndexFacesModelVersion'),
-            );
-
             $faceMatch = new FaceMatchData(
-                face      : $faceData,
+                face      : $this->retrieveFaceData($returnedFaceMatch),
                 similarity: Arr::get($returnedFaceMatch, 'Similarity'),
             );
 
@@ -857,22 +853,23 @@ trait RetrieveDataTrait
         return new DataCollection(FaceMatchData::class, $faceMatches);
     }
 
-    private function retrieveSearchedFaceBoundingBox(array $response): ?BoundingBoxData
+    /**
+     * Retrieves the searched face bounding box of the response including height, left, top, and width.
+     *
+     * @param array $response
+     *
+     * @return BoundingBoxData|null
+     */
+    protected function retrieveSearchedFaceBoundingBox(array $response): ?BoundingBoxData
     {
-        $boundingBox = Arr::get($response,'SearchedFaceBoundingBox',[]);
+        $returnedBoundingBox = Arr::get($response,'SearchedFaceBoundingBox',[]);
 
-        $boundingBoxData = new BoundingBoxData(
-            height : Arr::get($boundingBox, 'Height'),
-            width  : Arr::get($boundingBox, 'Width'),
-            left   : Arr::get($boundingBox, 'Left'),
-            top    : Arr::get($boundingBox, 'Top'),
+        return new BoundingBoxData(
+            height: Arr::get($returnedBoundingBox, 'Height'),
+            left  : Arr::get($returnedBoundingBox, 'Left'),
+            top   : Arr::get($returnedBoundingBox, 'Top'),
+            width : Arr::get($returnedBoundingBox, 'Width'),
         );
-
-        if (empty($boundingBoxData)) {
-            return null;
-        }
-
-        return $boundingBoxData;
     }
 
     /**

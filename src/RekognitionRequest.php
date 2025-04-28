@@ -244,7 +244,7 @@ final readonly class RekognitionRequest extends RekognitionAPI
      */
     public function searchFacesByImage(SearchFacesByImageData $searchFacesByImageData): SearchFacesByImageResultData
     {
-        // Send the request to AWS Rekognition API for searching users by image.
+        // Send the request to AWS Rekognition API for searching faces by image.
         $response = $this->client->searchFacesByImage($searchFacesByImageData->toRekognitionDataFormat());
 
         // Form the response before returning it.

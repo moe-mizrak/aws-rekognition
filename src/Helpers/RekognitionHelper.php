@@ -222,10 +222,10 @@ final readonly class RekognitionHelper
     public function formSearchFacesByImageResponse(array $response): SearchFacesByImageResultData
     {
         return new SearchFacesByImageResultData(
-            faceModelVersion: Arr::get($response, 'FaceModelVersion'),
-            faceMatches: $this->retrieveFaceMatches($response),
+            faceModelVersion       : Arr::get($response, 'FaceModelVersion'),
+            faceMatches            : $this->retrieveFaceMatches($response),
             searchedFaceBoundingBox: $this->retrieveSearchedFaceBoundingBox($response),
-            searchedFaceConfidence: Arr::get($response, 'SearchedFaceConfidence'),
+            searchedFaceConfidence : Arr::get($response, 'SearchedFaceConfidence'),
         );
     }
 }
