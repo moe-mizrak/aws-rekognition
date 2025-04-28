@@ -40,6 +40,7 @@ use MoeMizrak\Rekognition\Data\ResultData\UnsearchedFaceData;
 use MoeMizrak\Rekognition\Data\ResultData\UnsuccessfulFaceAssociationData;
 use MoeMizrak\Rekognition\Data\ResultData\UnsuccessfulFaceDeletionsData;
 use MoeMizrak\Rekognition\Data\ResultData\UserMatchData;
+use MoeMizrak\Rekognition\Data\ResultData\FaceMatchData;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -826,6 +827,52 @@ trait RetrieveDataTrait
         }
 
         return new DataCollection(UserMatchData::class, $userMatches);
+    }
+
+    private function retrieveFaceMatches(array $response): DataCollection
+    {
+        $faceMatches = [];
+        $returnedFaceMatches = Arr::get($response, 'FaceMatches', []);
+
+        foreach ($returnedFaceMatches as $returnedFaceMatch) {
+            $returnedFaceData = Arr::get($returnedFaceMatch, 'Face');
+
+            $faceData = new FaceData(
+                faceId                  : Arr::get($returnedFaceData, 'FaceId'),
+                boundingBox             : $this->retrieveBoundingBoxData($returnedFaceData),
+                imageId                 : Arr::get($returnedFaceData, 'ImageId'),
+                externalImageId         : Arr::get($returnedFaceData, 'ExternalImageId'),
+                confidence              : Arr::get($returnedFaceData, 'Confidence'),
+                indexFacesModelVersion  : Arr::get($returnedFaceData, 'IndexFacesModelVersion'),
+            );
+
+            $faceMatch = new FaceMatchData(
+                face      : $faceData,
+                similarity: Arr::get($returnedFaceMatch, 'Similarity'),
+            );
+
+            $faceMatches[] = $faceMatch;
+        }
+
+        return new DataCollection(FaceMatchData::class, $faceMatches);
+    }
+
+    private function retrieveSearchedFaceBoundingBox(array $response): ?BoundingBoxData
+    {
+        $boundingBox = Arr::get($response,'SearchedFaceBoundingBox',[]);
+
+        $boundingBoxData = new BoundingBoxData(
+            height : Arr::get($boundingBox, 'Height'),
+            width  : Arr::get($boundingBox, 'Width'),
+            left   : Arr::get($boundingBox, 'Left'),
+            top    : Arr::get($boundingBox, 'Top'),
+        );
+
+        if (empty($boundingBoxData)) {
+            return null;
+        }
+
+        return $boundingBoxData;
     }
 
     /**

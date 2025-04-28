@@ -16,6 +16,7 @@ use MoeMizrak\Rekognition\Data\ResultData\IndexFacesResultData;
 use MoeMizrak\Rekognition\Data\ResultData\ListCollectionsResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DetectLabelsResultData;
 use MoeMizrak\Rekognition\Data\ResultData\SearchUsersByImageResultData;
+use MoeMizrak\Rekognition\Data\ResultData\SearchFacesByImageResultData;
 use MoeMizrak\Rekognition\Traits\RetrieveDataTrait;
 
 /**
@@ -208,6 +209,23 @@ final readonly class RekognitionHelper
             searchedFace    : $this->retrieveSearchedFace($response),
             unsearchedFaces : $this->retrieveUnsearchedFaces($response),
             metadata        : $this->retrieveMetaData($response),
+        );
+    }
+
+    /**
+     * Forms the Rekognition search users by image response to SearchUsersByImageResultData including face model version, user matches, searched face, unsearched faces, and metadata.
+     *
+     * @param array $response
+     *
+     * @return SearchFacesByImageResultData
+     */
+    public function formSearchFacesByImageResponse(array $response): SearchFacesByImageResultData
+    {
+        return new SearchFacesByImageResultData(
+            faceModelVersion: Arr::get($response, 'FaceModelVersion'),
+            faceMatches: $this->retrieveFaceMatches($response),
+            searchedFaceBoundingBox: $this->retrieveSearchedFaceBoundingBox($response),
+            searchedFaceConfidence: Arr::get($response, 'SearchedFaceConfidence'),
         );
     }
 }

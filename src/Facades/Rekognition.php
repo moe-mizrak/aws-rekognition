@@ -27,7 +27,7 @@ use MoeMizrak\Rekognition\Data\ResultData\ListCollectionsResultData;
 use MoeMizrak\Rekognition\Data\ResultData\DetectLabelsResultData;
 use MoeMizrak\Rekognition\Data\ResultData\SearchUsersByImageResultData;
 use MoeMizrak\Rekognition\Data\SearchUsersByImageData;
-
+use MoeMizrak\Rekognition\Data\SearchFacesByImageData;
 /**
  * Facade for AWS Rekognition.
  *
@@ -43,6 +43,7 @@ use MoeMizrak\Rekognition\Data\SearchUsersByImageData;
  * @method static ListFacesResultData listFaces(ListFacesData $listFacesData) Returns faces in the specified collection (It can be filtered by userId, and faceIds).
  * @method static DeleteFacesResultData deleteFaces(DeleteFacesData $deleteFacesData) Deletes faces from a collection. You specify a collection id and an array of face ids to remove from the collection.
  * @method static SearchUsersByImageResultData searchUsersByImage(SearchUsersByImageData $searchUsersByImageData) Searches for userIds using a supplied image. It first detects the largest face in the image, and then searches a specified collection for matching userIds.
+ * @method static SearchFacesByImageResultData searchFacesByImageData(SearchFacesByImageData $searchFacesByImageData) Searches for faceIds using a supplied image. It first detects the largest face in the image, and then searches a specified collection for matching userIds.
  *
  * For more information, see https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-rekognition-2016-06-27.html
  *
