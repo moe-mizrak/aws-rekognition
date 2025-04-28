@@ -40,6 +40,7 @@ use MoeMizrak\Rekognition\Data\ResultData\UnsearchedFaceData;
 use MoeMizrak\Rekognition\Data\ResultData\UnsuccessfulFaceAssociationData;
 use MoeMizrak\Rekognition\Data\ResultData\UnsuccessfulFaceDeletionsData;
 use MoeMizrak\Rekognition\Data\ResultData\UserMatchData;
+use MoeMizrak\Rekognition\Data\ResultData\FaceMatchData;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -826,6 +827,49 @@ trait RetrieveDataTrait
         }
 
         return new DataCollection(UserMatchData::class, $userMatches);
+    }
+
+    /**
+     * Retrieves the face matches data of the response including similarity and face data.
+     *
+     * @param array $response
+     *
+     * @return DataCollection
+     */
+    protected function retrieveFaceMatches(array $response): DataCollection
+    {
+        $faceMatches = [];
+        $returnedFaceMatches = Arr::get($response, 'FaceMatches', []);
+
+        foreach ($returnedFaceMatches as $returnedFaceMatch) {
+            $faceMatch = new FaceMatchData(
+                face      : $this->retrieveFaceData($returnedFaceMatch),
+                similarity: Arr::get($returnedFaceMatch, 'Similarity'),
+            );
+
+            $faceMatches[] = $faceMatch;
+        }
+
+        return new DataCollection(FaceMatchData::class, $faceMatches);
+    }
+
+    /**
+     * Retrieves the searched face bounding box of the response including height, left, top, and width.
+     *
+     * @param array $response
+     *
+     * @return BoundingBoxData|null
+     */
+    protected function retrieveSearchedFaceBoundingBox(array $response): ?BoundingBoxData
+    {
+        $returnedBoundingBox = Arr::get($response,'SearchedFaceBoundingBox',[]);
+
+        return new BoundingBoxData(
+            height: Arr::get($returnedBoundingBox, 'Height'),
+            left  : Arr::get($returnedBoundingBox, 'Left'),
+            top   : Arr::get($returnedBoundingBox, 'Top'),
+            width : Arr::get($returnedBoundingBox, 'Width'),
+        );
     }
 
     /**

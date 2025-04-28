@@ -34,6 +34,7 @@ trait MockTrait
             'listFaces'          => $this->mockListFacesBody(),
             'deleteFaces'        => $this->mockDeleteFacesBody(),
             'searchUsersByImage' => $this->mockSearchUsersByImageBody(),
+            'searchFacesByImage' => $this->mockSearchFacesByImageBody(),
             default              => new Result([]),
         };
     }
@@ -639,6 +640,62 @@ trait MockTrait
                     'User' => [
                         'UserId' => 'test_user_id',
                         'UserStatus' => 'ACTIVE',
+                    ],
+                ],
+            ],
+            "@metadata" => $this->mockMetadata(),
+        ];
+
+        return new Result($data);
+    }
+
+    /**
+     * Mock the search faces by image response body. This is the response that would be returned from the AWS Rekognition API searchFacesByImage call.
+     *
+     * @return Result
+     */
+    public function mockSearchFacesByImageBody(): Result
+    {
+        $data = [
+            'FaceModelVersion' => '7.0',
+            'SearchedFaceBoundingBox' => [
+                "Width" => 0.176543763279915,
+                "Height" => 0.12887394547462,
+                "Left" => 0.13118159472942,
+                "Top" => 0.32349938559532,
+            ],
+            'SearchedFaceConfidence' => 99.99772644043,
+            'FaceMatches' => [
+                [
+                    'Similarity' => 99.881866455078,
+                    'Face' => [
+                        'FaceId' => '038388f6-221a-4f3f-aab5-1ccd8256f7e8',
+                        'BoundingBox' => [
+                            'Width' => 0.076543763279915,
+                            'Height' => 0.15887394547462,
+                            'Left' => 0.18118159472942,
+                            'Top' => 0.32549938559532,
+                        ],
+                        'ImageId' => '8d0575de-6fc3-3762-8644-3b393cef2741',
+                        'ExternalImageId' => 'test_external_image_id',
+                        'Confidence' => 99.99772644043,
+                        'UserId' => 'test_user_id_0',
+                    ],
+                ],
+                [
+                    'Similarity' => 99.881866455078,
+                    'Face' => [
+                        'FaceId' => '938388f6-221a-4f3f-aab5-1ccd8256f7e3',
+                        'BoundingBox' => [
+                            'Width' => 0.176543763279915,
+                            'Height' => 0.12887394547462,
+                            'Left' => 0.13118159472942,
+                            'Top' => 0.32349938559532,
+                        ],
+                        'ImageId' => '3d0575de-6fc3-3762-8644-3b393cef2749',
+                        'ExternalImageId' => 'test_external_image_id',
+                        'Confidence' => 99.69772644043,
+                        'UserId' => 'test_user_id_1',
                     ],
                 ],
             ],
