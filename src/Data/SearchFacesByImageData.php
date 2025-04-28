@@ -18,7 +18,7 @@ final class SearchFacesByImageData extends Data implements RekognitionDataFormat
 {
     public function __construct(
         /*
-         * The id of an existing collection containing the userId.
+         * The id of an existing collection containing the face.
          *
          * @param string
          */
@@ -39,12 +39,21 @@ final class SearchFacesByImageData extends Data implements RekognitionDataFormat
         public ?int $maxFaces = null,
 
         /*
-         * Specifies the minimum confidence in the userId match to return.
+         * Specifies the minimum confidence in the face match to return.
          * Note: Default value is 80.
          *
          * @param float|null
          */
         public ?float $faceMatchThreshold = null,
+
+        /*
+         * A filter that specifies a quality bar for how much filtering is done to identify faces.
+         * Filtered faces aren't searched for in the collection.
+         * Note: The default value is NONE.
+         *
+         * @param string|null
+         */
+        public ?string $qualityFilter = null,
     ) {}
 
     /**
@@ -57,7 +66,8 @@ final class SearchFacesByImageData extends Data implements RekognitionDataFormat
                 'CollectionId'       => $this->collectionId,
                 'Image'              => $this->image->toRekognitionDataFormat(),
                 'MaxFaces'           => $this->maxFaces,
-                'FaceMatchThreshold' => $this->faceMatchThreshold
+                'FaceMatchThreshold' => $this->faceMatchThreshold,
+                'QualityFilter'      => $this->qualityFilter,
             ],
             fn($value) => $value !== null
         );

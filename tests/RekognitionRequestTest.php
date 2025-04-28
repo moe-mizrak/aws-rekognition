@@ -7,6 +7,8 @@ use MoeMizrak\Rekognition\Data\CreateCollectionData;
 use MoeMizrak\Rekognition\Data\DeleteFacesData;
 use MoeMizrak\Rekognition\Data\ListFacesData;
 use MoeMizrak\Rekognition\Data\ListUsersData;
+use MoeMizrak\Rekognition\Data\ResultData\BoundingBoxData;
+use MoeMizrak\Rekognition\Data\SearchFacesByImageData;
 use MoeMizrak\Rekognition\Data\UserData;
 use MoeMizrak\Rekognition\Data\DeleteCollectionData;
 use MoeMizrak\Rekognition\Data\DetectLabelsData;
@@ -341,5 +343,38 @@ class RekognitionRequestTest extends TestCase
         $this->assertInstanceOf(SearchedFaceData::class, $response->searchedFace);
         $this->assertNotNull($response->unsearchedFaces);
         $this->assertInstanceOf(DataCollection::class, $response->unsearchedFaces);
+    }
+
+    #[Test]
+    public function it_tests_search_faces_by_image_request()
+    {
+        /* SETUP */
+        $methodName = 'searchFacesByImage';
+        $this->mockRekognitionClient($methodName);
+        $imagePath = __DIR__.'/resources/images/test_labels.jpg';
+        $image = file_get_contents($imagePath);
+        $imageData = new ImageData(
+            bytes: $image,
+        );
+        $searchFacesByImageData = new SearchFacesByImageData(
+            collectionId: 'test_collection_id',
+            image: $imageData,
+            maxFaces: 2,
+            faceMatchThreshold: 80.0,
+            qualityFilter: 'MEDIUM',
+        );
+
+        /* EXECUTE */
+        $response = Rekognition::searchFacesByImage($searchFacesByImageData);
+
+        /* ASSERT */
+        $this->metaDataAssertions($response);
+        $this->assertNotNull($response->faceModelVersion);
+        $this->assertNotNull($response->faceMatches);
+        $this->assertInstanceOf(DataCollection::class, $response->faceMatches);
+        $this->assertNotNull($response->searchedFaceBoundingBox);
+        $this->assertInstanceOf(BoundingBoxData::class, $response->searchedFaceBoundingBox);
+        $this->assertNotNull($response->searchedFaceConfidence);
+        $this->assertIsFloat($response->searchedFaceConfidence);
     }
 }

@@ -235,12 +235,12 @@ final readonly class RekognitionRequest extends RekognitionAPI
     }
 
     /**
-     * Searches for faceIds using a supplied image.
-     * It first detects the largest face in the image, and then searches a specified collection for matching faceIds.
+     * Searches for faces using a supplied image.
+     * It first detects the largest face in the image, and then searches a specified collection for matching faces.
      *
      * @param SearchFacesByImageData $searchFacesByImageData
      *
-     * @return SearchUsersByImageResultData
+     * @return SearchFacesByImageResultData
      */
     public function searchFacesByImage(SearchFacesByImageData $searchFacesByImageData): SearchFacesByImageResultData
     {
