@@ -6,6 +6,10 @@
 [![Latest Version on Packagist](https://img.shields.io/badge/packagist-v1.0-blue)](https://packagist.org/packages/moe-mizrak/aws-rekognition)
 <br />
 
+<a href="https://reboosty-reboosty.vercel.app/api?repo_url=https://github.com/moe-mizrak/aws-rekognition" target="_blank">
+  <img src="https://reboosty-reboosty.vercel.app/api?repo_url=https://github.com/moe-mizrak/aws-rekognition" alt="reboosty" />
+</a>
+
 Laravel package for AWS Rekognition API (PHP 8)
 
 ---
